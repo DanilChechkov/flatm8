@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'flmate/style.css' %}">
+    <link rel="shortcut icon" sizes="any" href="{% static 'flmate/favicon.svg' %}" type="image/svg+xml">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+    <header>
+        <a id='logo' href="{% url 'index' %}">flatmate</a>
+        <ul class="mainmenu">
+            {% if request.user.is_authenticated %}
+                <li {% if section == "edit" %} class="selected" {% endif %}>
+                    Привет {{ request.user.username }},
+                    <a href="{% url 'edit' %}">Профиль</a>
+                </li>
+                <li {% if section == "dialogs" %} class="selected" {% endif %}>
+                    <a href="{% url 'dialogs' %}">Соседи</a>
+                </li>
+                <li >
+                    <a href="{% url 'password_change' %}">Сменить пароль</a>
+                </li>
+                <li>
+                    <a id='mainbut' href="{% url 'logout' %}">Выйти</a>
+                </li>
+        {% else %}
+                <li>
+                    <a href="{% url 'password_reset' %}">Забыли пароль?</a>
+                </li>
+                <li {% if section == "login" or section == "invlogin" %} class="selected" {% endif %}>
+                    <a href="{% url 'login' %}">Войти</a>
+                </li>
+                <li {% if section == "reg" or section == "wrongreg" %} class="selected" {% endif %}>
+                    <a id='mainbut' href="{% url 'register' %}">Регистрация </a>
+                </li>
+        {% endif %}
+        </ul>
+    </header>
+<body id='mainpage'>
+        {% block content %}
+        {% endblock %}
+</body>
+</html>

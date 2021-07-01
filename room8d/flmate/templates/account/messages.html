@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}List of roommates{% endblock %}
+{% block content %}
+{% if not chat %}
+    <h3>Невозможно начать этот чат</h3>
+{% else %}
+{% load tz %}
+<div id="mesPanel" style="overflow-y: scroll;overflow-x: hidden;">
+    {% for message in chat.message_set.all %}
+        {% include 'account/message.html' with message_item=message %}
+    {% endfor %}
+</div>
+<div id="message_form" >
+    <form id="message-form" method="post" enctype="multipart/form-data">
+        <div class="rowCenter2">
+        {{ form.message }}
+        {% csrf_token %}
+        <button id='sendMes' type="submit" class="btn btn-default btn-sm" onclick="return ETextEditor.validateForm('message-form')"><span class="ico ico-comment"></span>Отправить</button>
+        </div>
+    </form>
+</div>
+<script>
+    var objDiv = document.getElementById("mesPanel");
+    objDiv.scrollTop = objDiv.scrollHeight;
+</script>
+{% endif %}
+{% endblock %}

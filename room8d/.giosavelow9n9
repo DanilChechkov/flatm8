@@ -1,0 +1,31 @@
+upstream django {
+    server unix:///home/michlen/room8d/room8d.sock; # взаимодействие с uwsgi через Unix-сокет (мы воспользуемся этим вариантом позже) 
+    #server 127.0.0.1:8001; # взаимодействие с uwsgi через веб-порт 
+}
+
+server {
+    server_name     flatm8.ru;
+    listen 8000;
+    #ssl_certificate /etc/letsencrypt/live/flatm8.ru/fullchain.pem;
+    #ssl_certificate_key /etc/letsencrypt/live/flatm8.ru/privkey.pem;
+    #ssl_trusted_certificate /etc/letsencrypt/live/flatm8.ru/chain.pem;
+    charset     utf-8;
+    client_max_body_size 40M;  
+
+    location /.well-known {
+		root /var/www/html;
+	}
+	
+    location /media  {
+        alias /home/michlen/room8d/media;  # расположение медиафайлов (при необходимости измените)
+    }
+
+    location /static {
+        alias /home/michlen/room8d/static;  # расположение статики (при необходимости измените)
+
+    }
+    location / {
+        uwsgi_pass  django;
+        include     /home/michlen/room8d/uwsgi_params; # файл uwsgi_params, который мы только что взяли с github
+    }
+}

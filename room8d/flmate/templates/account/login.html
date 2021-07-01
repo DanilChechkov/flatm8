@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Log-in{% endblock %}
+{% block content %}
+<div id='log'>
+    <h2>Вход</h2>
+    {% if section == "invlogin" %}
+        <h3>Неверный логин или пароль</h3>
+    {% endif %}
+    <form action="." method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" id='logb' value="Войти">
+    </form>
+</div>
+{% endblock %}

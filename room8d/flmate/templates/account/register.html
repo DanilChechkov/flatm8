@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Create an account{% endblock %}
+
+{% block content %}
+<div id='log'>
+    <h2>Создать аккаунт</h2>
+    {% if section == "invlogin" %}
+        <h3>Ошибка регистрации, пожалуйста, введите корректные данные</h3>
+    {% endif %}
+    <form action="." method="post">
+        {{ user_form.as_p }}
+        {% csrf_token %}
+        <input type="submit" id='logb' value="Создать аккаунт">
+    </form>
+</div>
+{% endblock %}

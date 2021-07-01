@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %} Главная страница{% endblock %}
+
+{% block content %}
+<div id='indP'>
+
+    <div id='indP1'>
+        <h2 id='mainLab'>Мы находим соседей.</h2>
+        {% load static %}
+        <img id='mainImage' src="{% static 'flmate/main.svg' %}">
+        <div id='learnmore'>
+            <a href="#indP2">Как это работает</a>
+            <img id='arrow' src="{% static 'flmate/arrow.svg' %}">
+        </div>
+    </div>
+
+    <div id='indP2'>
+        <h2 id='indPBIG'>Учитываем</h2>
+        <div class='line'>
+            <img id='money' src="{% static 'flmate/money.svg' %}">
+            <img id='chara' src="{% static 'flmate/chara.svg' %}">
+            <img id='locat' src="{% static 'flmate/locat.svg' %}">
+        </div>
+        <div class='txtline'>
+            <p class='shortD' id='mon'>Материальное положение</p>
+            <p class='shortD' id='cha'>Характеры соседей</p>
+            <p class='shortD' id='loc'>Локацию</p>
+        </div>
+        <p id='ind1'>И многое другое...</p>
+        <p id='ind2'>Подбирая идеального соседа.</p>
+        <img id='main2' src="{% static 'flmate/main2.svg' %}">
+        <div id='goback'>
+            <a href="#logo">Наверх</a>
+            <img id='arrow' src="{% static 'flmate/arrowup.svg' %}">
+        </div>
+        <p id='sign'>DC</p>
+    </div>
+</div>
+<script>
+    $('a[href^="#"').on('click', function() {
+
+    let href = $(this).attr('href');
+
+    $('html, body').animate({
+        scrollTop: $(href).offset().top
+    });
+    return false;
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}List of roommates{% endblock %}
+{% block content %}
+
+<div class="panel">
+    {% load tz %}
+    {% load flmate_extras %}
+    {% if chats.count == 0 %}
+        <div class="panel panel-body">Подходящие соседи пока не найдены. Заполните профиль!</div>
+    {% endif %}
+    {% for chat in chats %}
+        <div class='diaBlock'>
+        {% with last_message=chat.message_set.last %}
+            {% get_companion user chat as companion %}
+            <a class="list-group-item {% if companion == last_message.author and not last_message.is_readed %}unreaded{% endif %}" href="{{ chat.get_absolute_url }}">
+            <div class="rowCenter">
+            <img src='{{companion.profile.photo.url}}'>
+                <ul class="list-inline">
+                    <li class="diaTop">
+                        <strong>{{ companion.username }}</strong>
+                        Вы совместимы на <strong>{{chat.cap}}%</strong>{% if chat.sub == 1 %}, но выбрали разные станции метро{% endif %}
+                    </li>
+                    {%if last_message %}
+                    <li class="diaDate"><small>{{ last_message.pub_date|utc }}</small></li>
+                    <li class='diaMess{% if not last_message.is_readed %}-unreaded{% endif %}'><nobr><strong>{{ last_message.author.username}}:</strong> {{ last_message.message|truncatechars_html:"200"|safe|striptags }}</nobr></li>
+                    {%else%}
+                    <li class='diaMess'>Сообщений пока нет</li>
+                    {%endif%}
+                </ul>
+            </div>
+            <div class='aboutRoomy'>{{ companion.profile.aprTELLUS }}</div>
+            </a>
+        {% endwith %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
