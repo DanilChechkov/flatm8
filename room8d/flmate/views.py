@@ -12,6 +12,8 @@ from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm,MessageFo
 
 def index(request):
     return render(request, 'account/index.html',{'section':'index'})
+def google(request):
+    return render(request, 'account/google3a35c7ffe9c8fa8e.html',{'section':'google'})
 
 def register(request):
     if request.method == 'POST':

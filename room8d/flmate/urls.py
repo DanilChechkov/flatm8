@@ -10,7 +10,7 @@ from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.views import PasswordResetDoneView
 from django.contrib.auth.views import PasswordResetConfirmView
 from django.contrib.auth.views import PasswordResetCompleteView
-from flmate.views import user_login,edit,register,index,dialog,messages
+from flmate.views import user_login,edit,register,index,dialog,messages,google
 
 urlpatterns = [
     url(r'^login/$', user_login, name='login'),
@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^index/$', index, name='index'),
     url(r'^dialogs/$', dialog, name='dialogs'),
     url(r'^messages/(?P<chat_id>\d+)/$', messages, name='messages'),
+    url(r'^google3a35c7ffe9c8fa8e.html/$',google, name='google'),
     path("select2/", include("django_select2.urls")),
 ]   
