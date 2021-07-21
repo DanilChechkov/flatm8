@@ -5,7 +5,6 @@
     <meta name="google-site-verification" content="DwPWLQUj7SiIwD3q-7rHanm72XOwHGmbxeRmqDbC-MM" />
     <meta name="yandex-verification" content="ec301fdb48ab52fe" />
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'flmate/style.css' %}">
     <link rel="shortcut icon" sizes="any" href="{% static 'flmate/favicon.svg' %}" type="image/svg+xml">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
@@ -16,10 +15,10 @@
 </head>
     <header>
         <a id='logo' href="{% url 'index' %}">flatmate</a>
+    </header>
         <ul class="mainmenu">
             {% if request.user.is_authenticated %}
                 <li {% if section == "edit" %} class="selected" {% endif %}>
-                    Привет {{ request.user.username }},
                     <a href="{% url 'edit' %}">Профиль</a>
                 </li>
                 <li {% if section == "dialogs" %} class="selected" {% endif %}>
@@ -43,9 +42,25 @@
                 </li>
         {% endif %}
         </ul>
-    </header>
+    
 <body id='mainpage'>
         {% block content %}
         {% endblock %}
 </body>
+<script>
+    const windW = window.innerWidth
+    const windH = window.innerHeight
+    var fileref=document.createElement("link")
+    fileref.setAttribute("rel", "stylesheet")
+    fileref.setAttribute("type", "text/css")
+    if (windW < windH){
+        fileref.setAttribute("href", "{% static 'flmate/mobile.css' %}")
+        document.getElementById('mainImage').src="{% static 'flmate/mainMob.svg' %}"}
+    else{
+        fileref.setAttribute("href", "{% static 'flmate/style.css' %}")
+        document.getElementById('mainImage').src="{% static 'flmate/main.svg' %}"}
+
+    document.getElementsByTagName("head")[0].appendChild(fileref)
+
+</script>
 </html>

@@ -73,6 +73,7 @@ a#mainbut{
 a#mainbut:hover{
     background-color: #00AA0B;
 }
+/* EERYTHING UPPER IS NAVIGATION BAR*/
 h2{
     color:#006907;
     font-size: 3.25vw;
@@ -320,7 +321,7 @@ div#learnmore a{
     position: absolute;
     width: 17.1vw;
     height: auto;
-    left: 42vw;
+    left: 41vw;
     top: 95vh;
 
     font-family: Raleway;

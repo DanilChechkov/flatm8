@@ -31,7 +31,7 @@ with open(os.path.join(BASE_DIR, "skey"),'r') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.flatm8.ru','flatm8.ru','127.0.0.1']
+ALLOWED_HOSTS = ['www.flatm8.ru','flatm8.ru','127.0.0.1','192.168.0.14']
 
 # Application definition
 
