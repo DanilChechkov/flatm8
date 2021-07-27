@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Edit your account{% endblock %}
+{% block title %}Изменить профиль{% endblock %}
 
 {% block content %}
 <form id = 'edpa' action="." method="post" enctype="multipart/form-data">
@@ -137,7 +137,7 @@
                 {% endfor %}
             {% endif %}
             {% if field.name == 'rmAgeL' %}
-            <label style="margin-left: auto!important;">&mdash;</label>
+            <label style="text-align: center!important;">&mdash;</label>
             {%endif%}
         {% endfor %}
         </div>

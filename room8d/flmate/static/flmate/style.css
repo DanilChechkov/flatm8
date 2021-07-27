@@ -401,7 +401,6 @@ div#log input#logb:hover{
     background-color: #00AA0B;
 }
 
-div#log span.helptext{visibility: hidden;}
 ul.errorlist{
     list-style: none;
     text-align: center;
@@ -439,6 +438,7 @@ a#lb{
 a#lb:hover{
     background-color: #006907;
 }
+/*EDPAGE*/
 img.ava{
     object-fit: cover;
     height:7.5vw;

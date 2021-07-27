@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Create an account{% endblock %}
+{% block title %}Создать аккаунт{% endblock %}
 
 {% block content %}
 <div id='log'>
@@ -14,4 +14,7 @@
         <input type="submit" id='logb' value="Создать аккаунт">
     </form>
 </div>
+<script>
+document.querySelectorAll('.helptext').forEach(e => e.remove());
+</script>
 {% endblock %}
