@@ -7,7 +7,14 @@
     <div id='indP1'>
         <h2 id='mainLab'>Мы находим соседей.</h2>
         {% load static %}
-        <img id='mainImage' src="{% static 'flmate/main.svg' %}">
+        <img id='mainImage' src="">
+        <script>
+            if (windW < windH){
+                    document.getElementById('mainImage').src="{% static 'flmate/mainMob.svg' %}"}
+            else{
+                document.getElementById('mainImage').src="{% static 'flmate/main.svg' %}"}
+            
+        </script>
         <div id='learnmore'>
             <a href="#indPBIG">Как это работает?</a>
             <img id='arrow' src="{% static 'flmate/arrow.svg' %}">

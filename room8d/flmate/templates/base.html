@@ -14,6 +14,20 @@
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!--Css ondemand-->
+    <script>
+        const windW = window.innerWidth
+        const windH = window.innerHeight
+        var fileref=document.createElement("link")
+        fileref.setAttribute("rel", "stylesheet")
+        fileref.setAttribute("type", "text/css")
+        if (windW < windH){
+            fileref.setAttribute("href", "{% static 'flmate/mobile.css' %}")}
+        else{
+            fileref.setAttribute("href", "{% static 'flmate/style.css' %}")}
+        
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+    </script>
 </head>
     <header>
         <a id='logo' href="{% url 'index' %}">flatmate</a>
@@ -48,27 +62,5 @@
     <body id='mainpage'>
             {% block content %}
             {% endblock %}
-            <script>
-                const windW = window.innerWidth
-                const windH = window.innerHeight
-                var fileref=document.createElement("link")
-                fileref.setAttribute("rel", "stylesheet")
-                fileref.setAttribute("type", "text/css")
-                if (windW < windH){
-                    fileref.setAttribute("href", "{% static 'flmate/mobile.css' %}")
-                    if(document.getElementById('mainImage'))
-                    {
-                        document.getElementById('mainImage').src="{% static 'flmate/mainMob.svg' %}"
-                    }
-                }
-                else{
-                    fileref.setAttribute("href", "{% static 'flmate/style.css' %}")
-                    if(document.getElementById('mainImage'))
-                    {
-                    document.getElementById('mainImage').src="{% static 'flmate/main.svg' %}"}
-                }
-                
-                document.getElementsByTagName("head")[0].appendChild(fileref)
-            </script>
     </body>
 </html>
