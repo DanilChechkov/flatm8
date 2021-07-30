@@ -20,8 +20,9 @@
     </form>
 </div>
 <script>
-    var objDiv = document.getElementById("mesPanel");
-    objDiv.scrollTop = objDiv.scrollHeight;
+    $(document).ready(function() {
+    $('#mesPanel').scrollTop($('#mesPanel')[0].scrollHeight);
+});
 </script>
 {% endif %}
 {% endblock %}
