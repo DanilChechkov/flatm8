@@ -6,7 +6,7 @@
     {% load tz %}
     {% load flmate_extras %}
     {% if chats.count == 0 %}
-        <div class="panel panel-body">Подходящие соседи пока не найдены. Заполните профиль!</div>
+        <div class="panel panel-body">Подходящие соседи пока не найдены. Заполните профиль и как только тут что-то изменится - мы вас уведомим!</div>
     {% endif %}
     {% for chat in chats %}
         <div class='diaBlock'>
