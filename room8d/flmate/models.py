@@ -197,7 +197,7 @@ class Profile(models.Model):
 #О тебе
     abuLST = models.CharField(max_length=15,choices=LST_CHOICES,default='early',verbose_name='Хронотип:')
     abuCOMU = models.CharField(max_length=10,choices=COMU_CHOICES,default='intrv',verbose_name='Темперамент:')
-    abuBADIC = MultiSelectField(choices=BADIC_CHOICES, default='noadic',verbose_name="Вредные привычки:")
+    abuBADIC = MultiSelectField(choices=BADIC_CHOICES,verbose_name="Вредные привычки:")
     abuORGL = models.DecimalField(max_digits=2,decimal_places=0,default=5,verbose_name="Уровень организованности (0-10):")
 #О помещении
     abrTEMP = models.DecimalField(max_digits=2,decimal_places=0,default=24,verbose_name="Комфортная температура:")
@@ -210,7 +210,7 @@ class Profile(models.Model):
     aprR8GEN=models.CharField(max_length=20,choices=GENDER_CHOICES,default='inbetween',verbose_name='Пол:')
     aprURRELIGY=models.CharField(max_length=25,choices=RELIGY_CHOICES,default='pastafarian',verbose_name='Религия:')
     aprR8RELIGY=models.CharField(max_length=25,choices=RELIGY_CHOICES,default='pastafarian',verbose_name='Религия:')
-    aprFRETM = MultiSelectField( choices=FRETIM_CHOICES, default='imprusf',verbose_name="Cвободное время:")
+    aprFRETM = MultiSelectField( choices=FRETIM_CHOICES,verbose_name="Cвободное время:")
     aprPETS = models.CharField(max_length=15,choices=PETS_CHOICES,default='nomater',verbose_name='Питомцы допустимы?')
     aprTELLUS = models.TextField(max_length=160,default='Мне было лень это менять.',verbose_name='Пара слов о тебе (160 символов):')
 
