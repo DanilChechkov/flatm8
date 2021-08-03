@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Profile,Message,Chatroom
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'urAge', 'rmAgeL','rmAgeU','rntLPrice','rntUPrice','rntTime','rntSubway',
+    list_display = ['user','active', 'urAge', 'rmAgeL','rmAgeU','rntLPrice','rntUPrice','rntTime','rntSubway',
                 'abuLST','abuCOMU','abuBADIC','abuORGL',
                 'abrTEMP','abrSOUL','abrCLEAN','abrGUEST','abrCOMMUNISM',
                 'aprUGEN','aprR8GEN','aprURRELIGY','aprR8RELIGY','aprFRETM','aprPETS','aprTELLUS','photo']
