@@ -129,6 +129,8 @@ def edit(request):
                 if not (hPrice[0]<=myPrice[1]<=hPrice[1] or myPrice[0]<=hPrice[1]<=myPrice[1]):continue
                 if not ((hRRel == myRel or hRRel == 'nosing') and (myRRel == hRel or myRRel == 'nosing')): continue
                 if not ((hRGen == myGen or hRGen == 'inbetween') and (myRGen == hGen or myRGen == 'inbetween')): continue
+                if myRTime != hRTime: continue
+                points += 15
 
                 #COUNT POINTS, NOT VERY IMPORTANT POINTS
                 if myRTime == hRTime: points +=1                #TERM
@@ -152,7 +154,7 @@ def edit(request):
                 badInter = list(set(myBadic)&set(hBadic))
                 if len(badInter)>0: points +=1
                 #SAVING ROOMATES
-                capa = 100*points/16
+                capa = 100*points/31
 
                 mUser = User.objects.get(id=me.get('user_id'))
                 hUser = User.objects.get(id=you.get('user_id'))
