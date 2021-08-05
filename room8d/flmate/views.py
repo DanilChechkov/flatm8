@@ -161,6 +161,9 @@ def edit(request):
                 chatlist = Chatroom.objects.values()
                 if checkChatr(mUser,hUser,chatlist,capa,subinte):
                     createChatroom(mUser,hUser,capa,subinte)
+                    hUser.email_user("FLATMATE - you've got a match!", 
+                                'Привет! Мы нашли тебе соседа, заходи на сайт и познакомься во вкладке "СОСЕДИ"', 
+                                    'auto@flatm8.ru')
 
             checked = []
             return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
