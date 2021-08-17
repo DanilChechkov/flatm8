@@ -6,9 +6,10 @@ from django.views.generic import View
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
 
-import datetime
+import datetime, os,pickle
 from .models import Profile,Chatroom
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm,MessageForm,LoginForm
+from room8d import settings
 
 def index(request):
     return render(request, 'account/index.html',{'section':'index'})
@@ -156,14 +157,33 @@ def edit(request):
                 #SAVING ROOMATES
                 capa = 100*points/31
 
+                
                 mUser = User.objects.get(id=me.get('user_id'))
                 hUser = User.objects.get(id=you.get('user_id'))
                 chatlist = Chatroom.objects.values()
+                print(mUser.email)
                 if checkChatr(mUser,hUser,chatlist,capa,subinte):
                     createChatroom(mUser,hUser,capa,subinte)
                     hUser.email_user("FLATMATE - you've got a match!", 
                                 'Привет! Мы нашли тебе соседа, заходи на сайт и познакомься во вкладке "СОСЕДИ" --> https://flatm8.ru/', 
                                     'auto@flatm8.ru')
+                
+                    #NOTIFICATION SYSTEM
+                    notifFILE = settings.BASE_DIR +'/notification.pkl'
+                    print(notifFILE)
+                    notiData = {}
+                    if os.path.exists(notifFILE):
+                        with open(notifFILE, 'rb') as f:
+                            notiData = pickle.load(f)
+                    else:
+                        with open(notifFILE, 'wb') as f:
+                                pickle.dump(notiData, f)
+                    if not hUser.email in notiData.keys():
+                        notiData[hUser.email] = [1,0,0]
+                    else:notiData[hUser.email][0]+=1
+                    with open(notifFILE, 'wb') as f:
+                                pickle.dump(notiData, f)
+                    #NOTIF SYS OVER
 
             checked = []
             return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
@@ -238,6 +258,27 @@ def messages(request,chat_id):
             message.chat_id = chat_id
             message.author = request.user
             message.save()
+            #NOTIFICATION SYSTEM
+            chat = Chatroom.objects.get(id=chat_id)
+            cmembers = chat.members.all()
+            hUser = cmembers[0] if cmembers[0]!=request.user else cmembers[1]
+            print(hUser)
+            notifFILE = settings.BASE_DIR +'/notification.pkl'
+            print(notifFILE)
+            notiData = {}
+            if os.path.exists(notifFILE):
+                with open(notifFILE, 'rb') as f:
+                    notiData = pickle.load(f)
+            else:
+                with open(notifFILE, 'wb') as f:
+                        pickle.dump(notiData, f)
+            if not hUser.email in notiData.keys():
+                notiData[hUser.email] = [0,1,0]
+            else:notiData[hUser.email][1]+=1
+            with open(notifFILE, 'wb') as f:
+                        pickle.dump(notiData, f)
+            print(notiData)
+            #NOTIF SYS OVER
         try:
             chat = Chatroom.objects.get(id=chat_id)
             if request.user in chat.members.all():
