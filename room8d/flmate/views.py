@@ -162,7 +162,7 @@ def edit(request):
                 if checkChatr(mUser,hUser,chatlist,capa,subinte):
                     createChatroom(mUser,hUser,capa,subinte)
                     hUser.email_user("FLATMATE - you've got a match!", 
-                                'Привет! Мы нашли тебе соседа, заходи на сайт и познакомься во вкладке "СОСЕДИ"', 
+                                'Привет! Мы нашли тебе соседа, заходи на сайт и познакомься во вкладке "СОСЕДИ" --> https://flatm8.ru/', 
                                     'auto@flatm8.ru')
 
             checked = []
