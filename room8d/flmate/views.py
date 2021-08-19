@@ -1,3 +1,4 @@
+from django.db.models.query import InstanceCheckMeta
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -7,9 +8,12 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
 
 import datetime, os,pickle
+from django.utils import timezone
+from datetime import timedelta as td
 from .models import Profile,Chatroom
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm,MessageForm,LoginForm
 from room8d import settings
+from django.core.mail import send_mail
 
 def index(request):
     return render(request, 'account/index.html',{'section':'index'})
@@ -92,9 +96,38 @@ def edit(request):
             #myTemp,mySouL,myClean,myGuest,mymoL,myGen,myRGen,myRel,myRRel,myFrtime,myPets, sep='\n')
             
             for you in profileList:
-                if not you.get('active'):continue
+                if not you.get('active'):
+                    inactiveUser = User.objects.get(id=you.get('user_id'))
+                    lastlog = inactiveUser.last_login
+                    lastpos = timezone.now() - td(days=21)
+                    if(inactiveUser.profile.aprTELLUS == 'Мне было лень это менять.'):
+                        inactiveUser.profile.aprTELLUS = 'Мне было лень это менять!'
+                        inactiveUser.profile.active = False
+                        inactiveUser.profile.save()
+                        inactiveUser.email_user("FLATMATE - остался всего один шаг!", 
+                                'Привет! Ты создал аккаунт, но не заполнил профиль на сайте=( Мы сможем подобрать тебе подходящего соседа, только когда ты закончишь этот шаг. Заходи на сайт во вкладку ПРОФИЛЬ! --> https://flatm8.ru/', 
+                                    'auto@flatm8.ru')
+                        send_mail('НАПОМИНАНИЕ', 'Пользователь уведомлен о том, что нужно заполнить профиль', 
+                            'auto@flatm8.ru', ['auto@flatm8.ru'], fail_silently=True)
+                        print('SENDING NOTIFICATION')
+                    if lastlog<lastpos:
+                        print('HERE USER SHOULD BE DELETED')
+                    continue
+                else:
+                    UserToSwitch = User.objects.get(id=you.get('user_id'))
+                    lastlog = UserToSwitch.last_login
+                    lastpos = timezone.now() - td(days=14)
+                    if lastlog<lastpos:
+                        #DEACTIVE PROFILE CUZ USER HAVEN'T VISIT SITE FOR 14 DAYS
+                        UserToSwitch.profile.active = False
+                        UserToSwitch.profile.save()
+                        UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
+                                'Привет! Сайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт, открой вкладку "ПРОФИЛЬ" и нажми сохранить изменения, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
+                                    'auto@flatm8.ru')
+                        send_mail('ДЕАКТИВАЦИЯ', 'Пользователь деактивирован', 
+                            'auto@flatm8.ru', ['auto@flatm8.ru'], fail_silently=True)
+                        
                 if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
-                #print('AND')
                 points = 0
                 frtme = 0
                 subinte=0
@@ -164,9 +197,6 @@ def edit(request):
                 print(mUser.email)
                 if checkChatr(mUser,hUser,chatlist,capa,subinte):
                     createChatroom(mUser,hUser,capa,subinte)
-                    hUser.email_user("FLATMATE - you've got a match!", 
-                                'Привет! Мы нашли тебе соседа, заходи на сайт и познакомься во вкладке "СОСЕДИ" --> https://flatm8.ru/', 
-                                    'auto@flatm8.ru')
                 
                     #NOTIFICATION SYSTEM
                     notifFILE = settings.BASE_DIR +'/notification.pkl'
@@ -179,7 +209,7 @@ def edit(request):
                         with open(notifFILE, 'wb') as f:
                                 pickle.dump(notiData, f)
                     if not hUser.email in notiData.keys():
-                        notiData[hUser.email] = [1,0,0]
+                        notiData[hUser.email] = [1,0]
                     else:notiData[hUser.email][0]+=1
                     with open(notifFILE, 'wb') as f:
                                 pickle.dump(notiData, f)
@@ -228,6 +258,36 @@ def createChatroom(mUser,hUser,cap,sub):
 
 @login_required
 def dialog(request):
+    #NOTIFICATION SYSTEM
+    notifFILE = settings.BASE_DIR +'/notification.pkl'
+    print(notifFILE)
+    notiData = {}
+    if os.path.exists(notifFILE):
+        with open(notifFILE, 'rb') as f:
+            notiData = pickle.load(f)
+    else:
+        with open(notifFILE, 'wb') as f:
+                pickle.dump(notiData, f)
+    if not 'date' in notiData.keys():
+       notiData['date'] = timezone.now()+ td(days=5)
+    if notiData['date'] < timezone.now():
+        for email in notiData.keys():
+            if email!= 'date':
+                txt = "Привет! "
+                if notiData[email][0] >=1:
+                    txt += "Мы нашли тебе новых соседей!"
+                if notiData[email][1] >=1:
+                    txt += "А ещё у тебя как минимум одно новое сообщение!"
+                txt += " --> https://flatm8.ru/"  
+                send_mail('FLATMATE - у тебя сосед!', txt, 
+                    'auto@flatm8.ru', [email], fail_silently=True)
+                send_mail('ОПОВЕЩЕНИЕ', email + ' Пользователю отправлено оповещение', 
+                    'auto@flatm8.ru', ['auto@flatm8.ru'], fail_silently=True)
+        notiData = {'date': timezone.now()+ td(days=5)}
+    with open(notifFILE, 'wb') as f:
+        pickle.dump(notiData, f)
+    #NOTIF SYS OVER
+
     chats = Chatroom.objects.filter(members__in=[request.user.id])
     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
 
@@ -273,7 +333,7 @@ def messages(request,chat_id):
                 with open(notifFILE, 'wb') as f:
                         pickle.dump(notiData, f)
             if not hUser.email in notiData.keys():
-                notiData[hUser.email] = [0,1,0]
+                notiData[hUser.email] = [0,1]
             else:notiData[hUser.email][1]+=1
             with open(notifFILE, 'wb') as f:
                         pickle.dump(notiData, f)
