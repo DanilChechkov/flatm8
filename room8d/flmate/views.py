@@ -107,9 +107,6 @@ def edit(request):
                         inactiveUser.email_user("FLATMATE - остался всего один шаг!", 
                                 'Привет! Ты создал аккаунт, но не заполнил профиль на сайте=( Мы сможем подобрать тебе подходящего соседа, только когда ты закончишь этот шаг. Заходи на сайт во вкладку ПРОФИЛЬ! --> https://flatm8.ru/', 
                                     'auto@flatm8.ru')
-                        send_mail('НАПОМИНАНИЕ', 'Пользователь уведомлен о том, что нужно заполнить профиль', 
-                            'auto@flatm8.ru', ['auto@flatm8.ru'], fail_silently=True)
-                        print('SENDING NOTIFICATION')
                     if lastlog<lastpos:
                         print('HERE USER SHOULD BE DELETED')
                     continue
@@ -124,8 +121,6 @@ def edit(request):
                         UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
                                 'Привет! Сайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт, открой вкладку "ПРОФИЛЬ" и нажми сохранить изменения, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
                                     'auto@flatm8.ru')
-                        send_mail('ДЕАКТИВАЦИЯ', 'Пользователь деактивирован', 
-                            'auto@flatm8.ru', ['auto@flatm8.ru'], fail_silently=True)
                         
                 if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
                 points = 0
@@ -356,13 +351,3 @@ def messages(request,chat_id):
                 'form': MessageForm()
             })
     
-
-"""
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
-from .forms import LoginForm
-
-"""
-
-# Create your views here.
