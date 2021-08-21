@@ -251,7 +251,7 @@ def createChatroom(mUser,hUser,cap,sub):
 def dialog(request):
     #NOTIFICATION SYSTEM
     notifFILE = settings.BASE_DIR +'/notification.pkl'
-    print(notifFILE)
+    #print(notifFILE)
     notiData = {}
     if os.path.exists(notifFILE):
         with open(notifFILE, 'rb') as f:
@@ -259,6 +259,7 @@ def dialog(request):
     else:
         with open(notifFILE, 'wb') as f:
                 pickle.dump(notiData, f)
+    print(notiData)
     if not 'date' in notiData.keys():
        notiData['date'] = timezone.now()+ td(days=5)
     if notiData['date'] < timezone.now():
