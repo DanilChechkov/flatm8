@@ -261,7 +261,7 @@ def dialog(request):
                 pickle.dump(notiData, f)
     print(notiData)
     if not 'date' in notiData.keys():
-       notiData['date'] = timezone.now()+ td(days=5)
+       notiData['date'] = timezone.now()+ td(days=3)
     if notiData['date'] < timezone.now():
         for email in notiData.keys():
             if email!= 'date':
@@ -275,7 +275,7 @@ def dialog(request):
                     'auto@flatm8.ru', [email], fail_silently=True)
                 send_mail('ОПОВЕЩЕНИЕ', email + ' Пользователю отправлено оповещение: ' + txt, 
                     'auto@flatm8.ru', ['auto@flatm8.ru'], fail_silently=True)
-        notiData = {'date': timezone.now()+ td(days=5)}
+        notiData = {'date': timezone.now()+ td(days=3)}
     with open(notifFILE, 'wb') as f:
         pickle.dump(notiData, f)
     #NOTIF SYS OVER
