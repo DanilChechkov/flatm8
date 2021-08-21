@@ -92,8 +92,6 @@ def edit(request):
             myRRel = str(me.get('aprR8RELIGY'))
             myFrtime = [ x for x in me.get('aprFRETM')]
             myPets = str(me.get('aprPETS'))
-            #print(myAge,myRAge,myPrice,myRTime,mySubway,myHrono,myCOMU,myBadic,myOrgL,
-            #myTemp,mySouL,myClean,myGuest,mymoL,myGen,myRGen,myRel,myRRel,myFrtime,myPets, sep='\n')
             
             for you in profileList:
                 if not you.get('active'):
@@ -150,8 +148,6 @@ def edit(request):
 
                 checked.append([me.get('user_id'),you.get('user_id')])
                 checked.append([you.get('user_id'),me.get('user_id')])
-                #print(hAge,hRAge,hPrice,hRTime,hSubway,hHrono,hCOMU,hBadic,hOrgL,
-                #hTemp,hSouL,hClean,hGuest,hmoL,hGen,hRGen,hRel,hRRel,hFrtime,hPets, sep='\n')
 
                 #MAIN FILTERS: AGE,PRICE,RELIGY,GENDER,
                 if not hRAge[0]<=myAge<=hRAge[1] or not myRAge[0]<=hAge<=myRAge[1]: continue
@@ -276,7 +272,7 @@ def dialog(request):
                 txt += " --> https://flatm8.ru/"  
                 send_mail('FLATMATE - у тебя сосед!', txt, 
                     'auto@flatm8.ru', [email], fail_silently=True)
-                send_mail('ОПОВЕЩЕНИЕ', email + ' Пользователю отправлено оповещение', 
+                send_mail('ОПОВЕЩЕНИЕ', email + ' Пользователю отправлено оповещение: ' + txt, 
                     'auto@flatm8.ru', ['auto@flatm8.ru'], fail_silently=True)
         notiData = {'date': timezone.now()+ td(days=5)}
     with open(notifFILE, 'wb') as f:
