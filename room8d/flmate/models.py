@@ -26,7 +26,7 @@ class Chatroom(models.Model):
 class Message(models.Model):
     chat = models.ForeignKey(Chatroom,verbose_name='Чат',on_delete=models.CASCADE)
     author = models.ForeignKey(User,verbose_name='Пользователь',on_delete=models.CASCADE)
-    message = models.TextField('Сообщение')
+    message = models.TextField('Сообщение',on_delete=models.CASCADE)
     pub_date=models.DateTimeField('Дата сообщения',default=timezone.now)
     is_readed = models.BooleanField('Прочитано',default=False)
 
@@ -216,6 +216,8 @@ class Profile(models.Model):
 
     photo = models.ImageField(upload_to='users/%Y/%m/%d', blank=True,verbose_name='Тут можно загрузить свое фото', default='users/profdef.svg')
 
+    mesNotif= models.BooleanField(default=True,verbose_name='Уведомлять меня о новых сообщения:')
+    chatNotif= models.BooleanField(default=True,verbose_name='Уведомлять меня о новых соседях:')
     active= models.BooleanField(default=False)
 
     def __str__(self):
