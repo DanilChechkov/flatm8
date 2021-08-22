@@ -201,7 +201,7 @@ def edit(request):
                                 notiData = pickle.load(f)
                         if not hUser.email in notiData.keys():
                             notiData[hUser.email] = [timezone.now().date() -td(days=1),timezone.now().date() -td(days=1)]
-                        if timezone.now().date()<notiData[hUser.email][0]:
+                        if timezone.now().date() > notiData[hUser.email][0]:
                             hUser.email_user("FLATMATE - мы нашли тебе соседа!", 
                                     'Привет! Мы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/\nЕсли что-то работает не так дай нам об этом знать - DanilChechkov@flatm8.ru', 
                                         'flatmate@flatm8.ru')
@@ -253,6 +253,14 @@ def createChatroom(mUser,hUser,cap,sub):
 
 @login_required
 def dialog(request):
+    """
+    dat = {}
+    with open(settings.BASE_DIR +'/notification.pkl', 'rb') as f:
+        dat =pickle.load(f)
+    for email in dat:
+        if timezone.now().date() > dat[email][0]:
+            print('suc')
+    """
     chats = Chatroom.objects.filter(members__in=[request.user.id])
     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
 
@@ -296,7 +304,7 @@ def messages(request,chat_id):
                         notiData = pickle.load(f)
                 if not hUser.email in notiData.keys():
                     notiData[hUser.email] = [timezone.now().date() -td(days=1),timezone.now().date() -td(days=1)]
-                if timezone.now().date()<notiData[hUser.email][1]:
+                if timezone.now().date()>notiData[hUser.email][1]:
                     hUser.email_user("FLATMATE - у тебя новое сообщение!", 
                             'Привет! Твой идеальный сосед уже написал тебе! --> https://flatm8.ru/dialogs/\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/\nЕсли что-то работает не так - дай нам об этом знать - DanilChechkov@flatm8.ru', 
                                 'flatmate@flatm8.ru')
