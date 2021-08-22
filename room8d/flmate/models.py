@@ -26,7 +26,7 @@ class Chatroom(models.Model):
 class Message(models.Model):
     chat = models.ForeignKey(Chatroom,verbose_name='Чат',on_delete=models.CASCADE)
     author = models.ForeignKey(User,verbose_name='Пользователь',on_delete=models.CASCADE)
-    message = models.TextField('Сообщение',on_delete=models.CASCADE)
+    message = models.TextField('Сообщение')
     pub_date=models.DateTimeField('Дата сообщения',default=timezone.now)
     is_readed = models.BooleanField('Прочитано',default=False)
 
