@@ -159,7 +159,7 @@
         <h2>О квартире</h2>
         <label>Цена за квартиру:</label>
         <div class='row'>
-        {% for field in profile_form.visible_fields|slice:"17:"  %}
+        {% for field in profile_form.visible_fields|slice:"17:24"  %}
             {% if field.name == 'rntTime'%}
             </div>
             {{field.label_tag}}
@@ -199,6 +199,12 @@
         {% endif %}
         {% endfor %}
     </div>
+    </div>
+    <div class='notifications'>
+        {% for field in profile_form.visible_fields|slice:"24:"  %}
+        {{field.label_tag}}
+        {{field}}
+        {%endfor%}
     </div>
     {% csrf_token %}
     <label id='specialMark'>Данные недоступны другим пользователям, не продаются и не публикуются ни при каких условиях. Поле "Пара слов о тебе" и ваше фото являются исключением, доступным для просмотра другими людьми, при условии что алгоритм счел этого человека подходящим для Вас!</label>

@@ -2,7 +2,7 @@ from re import VERBOSE
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import widgets
-from django.forms.widgets import NumberInput, RadioSelect, TextInput, Textarea, Widget
+from django.forms.widgets import CheckboxInput, NumberInput, RadioSelect, TextInput, Textarea, Widget
 from django_select2 import forms as s2forms
 from .models import Profile,Message
 
@@ -33,7 +33,8 @@ class ProfileEditForm(forms.ModelForm):
         fields = ('photo','urAge','aprUGEN', 'abuCOMU','abuORGL','abrCLEAN','aprURRELIGY','abuBADIC','aprTELLUS',
                 'abuLST','aprPETS','abrTEMP','aprFRETM',
                 'rmAgeL','rmAgeU','aprR8GEN','aprR8RELIGY',
-                'rntLPrice','rntUPrice','rntTime','rntSubway','abrGUEST','abrSOUL','abrCOMMUNISM')
+                'rntLPrice','rntUPrice','rntTime','rntSubway','abrGUEST','abrSOUL','abrCOMMUNISM',
+                'mesNotif','chatNotif')
         #fields = "__all__"
         widgets = {
             'urAge':NumberInput(attrs={'min': '16','max':'99'}),
@@ -52,6 +53,8 @@ class ProfileEditForm(forms.ModelForm):
             'abrGUEST':RadioSelect,
             'abrCOMMUNISM':RadioSelect,
             'aprPETS':RadioSelect,
+            'mesNotif':CheckboxInput,
+            'chatNotif':CheckboxInput,
         } 
         #exclude=['user']
         #rnSub = forms.MultipleChoiceField(choices=SUB_CHOICES, widget=forms.CheckboxSelectMultiple)

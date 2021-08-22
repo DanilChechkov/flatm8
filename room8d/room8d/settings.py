@@ -124,9 +124,9 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-DEFAULT_FROM_EMAIL = 'auto@flatm8.ru'
+DEFAULT_FROM_EMAIL = 'flatmate@flatm8.ru'
 EMAIL_HOST = 'mail.flatm8.ru'
-EMAIL_HOST_USER = 'auto@flatm8.ru'
+EMAIL_HOST_USER = 'flatmate@flatm8.ru'
 with open(os.path.join(BASE_DIR, "ekey"),'r') as f:
     EMAIL_HOST_PASSWORD = f.read()[:-1]
 # если используется защищенное соединение
@@ -134,7 +134,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 ADMINS = (
-    ('Danil', 'danilchechkov@icloud.com'),
+    ('Danil', 'danilchechkov@flatm8.ru'),
 )
 MANAGERS = ADMINS
 

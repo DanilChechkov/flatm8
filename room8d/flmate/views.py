@@ -104,9 +104,13 @@ def edit(request):
                         inactiveUser.profile.save()
                         inactiveUser.email_user("FLATMATE - остался всего один шаг!", 
                                 'Привет! Ты создал аккаунт, но не заполнил профиль на сайте=( Мы сможем подобрать тебе подходящего соседа, только когда ты закончишь этот шаг. Заходи на сайт во вкладку ПРОФИЛЬ! --> https://flatm8.ru/', 
-                                    'auto@flatm8.ru')
+                                    'flatmate@flatm8.ru')
                     if lastlog<lastpos:
-                        print('HERE USER SHOULD BE DELETED')
+                        for chat in Chatroom.objects.all():
+                            if inactiveUser in chat.members.all():
+                                chat.delete()
+                        inactiveUser.profile.delete()
+                        inactiveUser.delete()
                     continue
                 else:
                     UserToSwitch = User.objects.get(id=you.get('user_id'))
@@ -118,7 +122,7 @@ def edit(request):
                         UserToSwitch.profile.save()
                         UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
                                 'Привет! Сайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт, открой вкладку "ПРОФИЛЬ" и нажми сохранить изменения, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
-                                    'auto@flatm8.ru')
+                                    'flatmate@flatm8.ru')
                         
                 if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
                 points = 0
@@ -188,22 +192,22 @@ def edit(request):
                 print(mUser.email)
                 if checkChatr(mUser,hUser,chatlist,capa,subinte):
                     createChatroom(mUser,hUser,capa,subinte)
-                
                     #NOTIFICATION SYSTEM
                     notifFILE = settings.BASE_DIR +'/notification.pkl'
-                    print(notifFILE)
                     notiData = {}
-                    if os.path.exists(notifFILE):
-                        with open(notifFILE, 'rb') as f:
-                            notiData = pickle.load(f)
-                    else:
+                    if hUser.profile.chatNotif:
+                        if os.path.exists(notifFILE):
+                            with open(notifFILE, 'rb') as f:
+                                notiData = pickle.load(f)
+                        if not hUser.email in notiData.keys():
+                            notiData[hUser.email] = [timezone.now().date() -td(days=1),timezone.now().date() -td(days=1)]
+                        if timezone.now().date()<notiData[hUser.email][0]:
+                            hUser.email_user("FLATMATE - мы нашли тебе соседа!", 
+                                    'Привет! Мы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/\nЕсли что-то работает не так дай нам об этом знать - DanilChechkov@flatm8.ru', 
+                                        'flatmate@flatm8.ru')
+                            notiData[hUser.email][0] = timezone.now().date()
                         with open(notifFILE, 'wb') as f:
-                                pickle.dump(notiData, f)
-                    if not hUser.email in notiData.keys():
-                        notiData[hUser.email] = [1,0]
-                    else:notiData[hUser.email][0]+=1
-                    with open(notifFILE, 'wb') as f:
-                                pickle.dump(notiData, f)
+                            pickle.dump(notiData, f)
                     #NOTIF SYS OVER
 
             checked = []
@@ -249,37 +253,6 @@ def createChatroom(mUser,hUser,cap,sub):
 
 @login_required
 def dialog(request):
-    #NOTIFICATION SYSTEM
-    notifFILE = settings.BASE_DIR +'/notification.pkl'
-    #print(notifFILE)
-    notiData = {}
-    if os.path.exists(notifFILE):
-        with open(notifFILE, 'rb') as f:
-            notiData = pickle.load(f)
-    else:
-        with open(notifFILE, 'wb') as f:
-                pickle.dump(notiData, f)
-    print(notiData)
-    if not 'date' in notiData.keys():
-       notiData['date'] = timezone.now()+ td(days=3)
-    if notiData['date'] < timezone.now():
-        for email in notiData.keys():
-            if email!= 'date':
-                txt = "Привет! "
-                if notiData[email][0] >=1:
-                    txt += "Мы нашли тебе новых соседей!"
-                if notiData[email][1] >=1:
-                    txt += "А ещё у тебя как минимум одно новое сообщение!"
-                txt += " --> https://flatm8.ru/"  
-                send_mail('FLATMATE - у тебя сосед!', txt, 
-                    'auto@flatm8.ru', [email], fail_silently=True)
-                send_mail('ОПОВЕЩЕНИЕ', email + ' Пользователю отправлено оповещение: ' + txt, 
-                    'auto@flatm8.ru', ['auto@flatm8.ru'], fail_silently=True)
-        notiData = {'date': timezone.now()+ td(days=3)}
-    with open(notifFILE, 'wb') as f:
-        pickle.dump(notiData, f)
-    #NOTIF SYS OVER
-
     chats = Chatroom.objects.filter(members__in=[request.user.id])
     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
 
@@ -310,26 +283,26 @@ def messages(request,chat_id):
             message.chat_id = chat_id
             message.author = request.user
             message.save()
+
             #NOTIFICATION SYSTEM
+            notifFILE = settings.BASE_DIR +'/notification.pkl'
+            notiData = {}
             chat = Chatroom.objects.get(id=chat_id)
             cmembers = chat.members.all()
             hUser = cmembers[0] if cmembers[0]!=request.user else cmembers[1]
-            print(hUser)
-            notifFILE = settings.BASE_DIR +'/notification.pkl'
-            print(notifFILE)
-            notiData = {}
-            if os.path.exists(notifFILE):
-                with open(notifFILE, 'rb') as f:
-                    notiData = pickle.load(f)
-            else:
+            if hUser.profile.mesNotif:
+                if os.path.exists(notifFILE):
+                    with open(notifFILE, 'rb') as f:
+                        notiData = pickle.load(f)
+                if not hUser.email in notiData.keys():
+                    notiData[hUser.email] = [timezone.now().date() -td(days=1),timezone.now().date() -td(days=1)]
+                if timezone.now().date()<notiData[hUser.email][1]:
+                    hUser.email_user("FLATMATE - у тебя новое сообщение!", 
+                            'Привет! Твой идеальный сосед уже написал тебе! --> https://flatm8.ru/dialogs/\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/\nЕсли что-то работает не так - дай нам об этом знать - DanilChechkov@flatm8.ru', 
+                                'flatmate@flatm8.ru')
+                    notiData[hUser.email][1] = timezone.now().date()
                 with open(notifFILE, 'wb') as f:
-                        pickle.dump(notiData, f)
-            if not hUser.email in notiData.keys():
-                notiData[hUser.email] = [0,1]
-            else:notiData[hUser.email][1]+=1
-            with open(notifFILE, 'wb') as f:
-                        pickle.dump(notiData, f)
-            print(notiData)
+                    pickle.dump(notiData, f)
             #NOTIF SYS OVER
         try:
             chat = Chatroom.objects.get(id=chat_id)
