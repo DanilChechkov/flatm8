@@ -94,32 +94,22 @@ def edit(request):
             myPets = str(me.get('aprPETS'))
             
             for you in profileList:
-
                 if not you.get('active'):
                     inactiveUser = User.objects.get(id=you.get('user_id'))
                     lastlog = inactiveUser.last_login
                     lastpos = timezone.now()- td(days=21)
-                    if(inactiveUser.profile.aprTELLUS == 'Мне было лень это менять.'):
-                        inactiveUser.profile.aprTELLUS = 'Мне было лень это менять!'
-                        inactiveUser.profile.active = False
-                        inactiveUser.profile.save()
-                        inactiveUser.email_user("FLATMATE - остался всего один шаг!", 
-                                'Привет! Ты создал аккаунт, но не заполнил профиль на сайте=( Мы сможем подобрать тебе подходящего соседа, только когда ты закончишь этот шаг. Заходи на сайт во вкладку ПРОФИЛЬ! --> https://flatm8.ru/', 
-                                    'flatmate@flatm8.ru')
                     if lastlog<lastpos:
-                        print('wow b*tch')
-                        #for chat in Chatroom.objects.all():
-                        #    if inactiveUser in chat.members.all():
-                        #        chat.delete()
-                        #inactiveUser.profile.delete()
-                        #inactiveUser.delete()
+                        for chat in Chatroom.objects.all():
+                            if inactiveUser in chat.members.all():
+                                chat.delete()
+                        inactiveUser.profile.delete()
+                        inactiveUser.delete()
                     continue
                 else:
                     UserToSwitch = User.objects.get(id=you.get('user_id'))
                     lastlog = UserToSwitch.last_login
                     lastpos = timezone.now()- td(days=14)
-                    if lastlog<lastpos:
-                        #DEACTIVE PROFILE CUZ USER HAVEN'T VISIT SITE FOR 14 DAYS
+                    if lastlog<=lastpos:
                         UserToSwitch.profile.active = False
                         UserToSwitch.profile.save()
                         UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
@@ -191,7 +181,6 @@ def edit(request):
                 mUser = User.objects.get(id=me.get('user_id'))
                 hUser = User.objects.get(id=you.get('user_id'))
                 chatlist = Chatroom.objects.values()
-                print(mUser.email)
                 if checkChatr(mUser,hUser,chatlist,capa,subinte):
                     createChatroom(mUser,hUser,capa,subinte)
                     #NOTIFICATION SYSTEM
@@ -217,7 +206,7 @@ def edit(request):
             checked = []
             return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
         else:
-            print('fuck')
+            #THAT IS F*CK UP
             user_form = UserEditForm(instance=request.user)
             profile_form = ProfileEditForm(instance=request.user.profile)
             img = request.user.profile.photo
