@@ -34,7 +34,7 @@ class ProfileEditForm(forms.ModelForm):
                 'abuLST','aprPETS','abrTEMP','aprFRETM',
                 'rmAgeL','rmAgeU','aprR8GEN','aprR8RELIGY',
                 'rntLPrice','rntUPrice','rntTime','rntSubway','abrGUEST','abrSOUL','abrCOMMUNISM',
-                'mesNotif','chatNotif')
+                'contInsta','contTeleg','contVKont','mesNotif','chatNotif')
         #fields = "__all__"
         widgets = {
             'urAge':NumberInput(attrs={'min': '16','max':'99'}),
@@ -53,6 +53,9 @@ class ProfileEditForm(forms.ModelForm):
             'abrGUEST':RadioSelect,
             'abrCOMMUNISM':RadioSelect,
             'aprPETS':RadioSelect,
+            'contInsta':TextInput(attrs={'placeholder': 'Ваш ник в инстаграмм без @'}),
+            'contTeleg':TextInput(attrs={'placeholder': 'Укажите ваш ник в TG'}),
+            'contVKont':TextInput(attrs={'placeholder': 'Укажите тут ваш id'}),
             'mesNotif':CheckboxInput,
             'chatNotif':CheckboxInput,
         } 

@@ -29,7 +29,7 @@ with open(os.path.join(BASE_DIR, "skey"),'r') as f:
     SECRET_KEY = f.read()[:-1]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['www.flatm8.ru','flatm8.ru','127.0.0.1','192.168.0.14']
 
@@ -77,10 +77,10 @@ TEMPLATES = [
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-
-    },
-    # … default cache config and others
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-flatmate',
+    }
+    ,
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/2",
@@ -138,10 +138,12 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JaDjango отключить кэширование статикиvaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True

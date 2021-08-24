@@ -216,6 +216,10 @@ class Profile(models.Model):
 
     photo = models.ImageField(upload_to='users/%Y/%m/%d', blank=True,verbose_name='Тут можно загрузить свое фото', default='users/profdef.svg')
 
+    contInsta = models.CharField(max_length=60,default="",blank=True)
+    contTeleg = models.CharField(max_length=60,default="",blank=True)
+    contVKont = models.CharField(max_length=60,default="",blank=True)
+
     mesNotif= models.BooleanField(default=True,verbose_name='Уведомлять меня о новых сообщения:')
     chatNotif= models.BooleanField(default=True,verbose_name='Уведомлять меня о новых соседях:')
     active= models.BooleanField(default=False)

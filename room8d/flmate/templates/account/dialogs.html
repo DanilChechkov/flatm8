@@ -1,37 +1,141 @@
 {% extends "base.html" %}
-{% block title %}Список соседей{% endblock %}
+{% block title %}Список FLATMATE'ов{% endblock %}
 {% block content %}
 
-<div class="panel">
+<div class="diaPatch">
     {% load tz %}
     {% load flmate_extras %}
+    {% load static %}
     {% if chats.count == 0 %}
         <div class="panel panel-body">Подходящие соседи пока не найдены. Заполните профиль и как только тут что-то изменится - мы вас уведомим!</div>
     {% endif %}
+    <div class="diaLine">
     {% for chat in chats %}
-        <div class='diaBlock'>
+    {% if forloop.counter0|divisibleby:3 %}
+    </div>
+    <div class="diaLine">
+    {% endif %}
+    <div class='diaBlock'>
+        {% get_companion user chat as companion %}
+        <abbr title='{{ companion.first_name }}'><img id='uPh' src='{{companion.profile.photo.url}}'></abbr>
+        <p class="uname">{{ companion.username }}</p>
+        <abbr title="Твоя совместимость с потенциальным соседом"><p class='cap'>{{chat.cap}}%</p></abbr>
+        
+        {% if chat.sub == 0 %}
+            <abbr title='Вы выбрали одинаковые станции метро!'><img id='subTy' src="{% static 'flmate/goodSub.svg' %}"></abbr>
+        {% else %}
+            <abbr title='Вы выбрали разные станции метро, но может стоит написать? Всегда можно договориться'><img  id='subTy' src="{% static 'flmate/badSub.svg' %}"></abbr>
+        {%endif%}
+        <div class='aboutRoomy'>{{ companion.profile.aprTELLUS }}</div>
+        {% if companion.profile.contInsta %}
+        <a class="instA" href="https://www.instagram.com/{{ companion.profile.contInsta }}">
+            <img title='Перейти в Instagram' class='instA' src="{% static 'flmate/instA.svg' %}">
+        </a>
+        {%else%}
+        <a class="instA">
+            <abbr title='Пользователь не оставил ссылку на Instagram'><img class='instA' src="{% static 'flmate/instUN.svg' %}"></abbr> 
+        </a>
+        {%endif%}
+
+        {% if companion.profile.contTeleg %}
+        <a class="telA" href="https://t.me/{{ companion.profile.contTeleg }}">
+            <img title='Перейти в Телеграм' class='telA' src="{% static 'flmate/tgA.svg' %}">
+        </a>
+        {%else%}
+        <a class="telA">
+            <abbr title='Пользователь не оставил ссылку на Телеграм'><img  class='telA' src="{% static 'flmate/tgUN.svg' %}"></abbr>
+        </a>
+        {%endif%}
+
+        {% if companion.profile.contVKont %}
+        <a class="vkA" href="https://vk.com/{{ companion.profile.contVKont }}">
+            <img title='Перейти в ВКонтакте' class='vkA' src="{% static 'flmate/vkA.svg' %}">
+        </a>
+        {%else%}
+        <a class="vkA">
+            <abbr title='Пользователь не оставил ссылку на ВКонтакте'><img  class='vkA' src="{% static 'flmate/vkUN.svg' %}"></abbr>
+        </a>
+        {%endif%}
+        
+        <a class="FLATCHAT" href="{{ chat.get_absolute_url }}">
         {% with last_message=chat.message_set.last %}
-            {% get_companion user chat as companion %}
-            <a class="list-group-item {% if companion == last_message.author and not last_message.is_readed %}unreaded{% endif %}" href="{{ chat.get_absolute_url }}">
-            <div class="rowCenter">
-            <img src='{{companion.profile.photo.url}}'>
-                <ul class="list-inline">
-                    <li class="diaTop">
-                        <strong>{{ companion.username }}</strong>
-                        Вы совместимы на <strong>{{chat.cap}}%</strong>{% if chat.sub == 1 %}, но выбрали разные станции метро{% endif %}
-                    </li>
-                    {%if last_message %}
-                    <li class="diaDate"><small>{{ last_message.pub_date|utc }}</small></li>
-                    <li class='diaMess{% if not last_message.is_readed %}-unreaded{% endif %}'><nobr><strong>{{ last_message.author.username}}:</strong> {{ last_message.message|truncatechars_html:"200"|safe|striptags }}</nobr></li>
-                    {%else%}
-                    <li class='diaMess'>Сообщений пока нет</li>
-                    {%endif%}
-                </ul>
-            </div>
-            <div class='aboutRoomy'>{{ companion.profile.aprTELLUS }}</div>
-            </a>
+        {% if companion == last_message.author and not last_message.is_readed %}
+            <img title='У вас новое сообщение!' class='FLATCHAT' src="{% static 'flmate/FLATCHATN.svg' %}">
+        {% else %}
+            <img title='Перейти в чат на сайте' class='FLATCHAT' src="{% static 'flmate/FLATCHAT.svg' %}">
+        {% endif %}
         {% endwith %}
-        </div>
+        </a>
+    </div>
     {% endfor %}
+    </div>
 </div>
+<script>
+    /**
+ * touchHover.js
+ *
+ * Create tooltips on mouseover or on click (for supporting touch interfaces).
+ * 
+ * @author C. Scott Asbach
+ */
+
+$(document).ready(function() {	
+	
+	/**
+	 * store the value of and then remove the title attributes from the
+	 * abbreviations (thus removing the default tooltip functionality of
+         * the abbreviations)
+	 */
+	$('abbr').each(function(){		
+		
+		$(this).data('title',$(this).attr('title'));
+		$(this).removeAttr('title');
+	
+	});
+
+        /**
+	 * when abbreviations are mouseover-ed show a tooltip with the data from the title attribute
+	 */	
+	$('abbr').mouseover(function() {		
+		
+		// first remove all existing abbreviation tooltips
+		$('abbr').next('.tooltip').remove();
+		
+		// create the tooltip
+		$(this).after('<span class="tooltip">' + $(this).data('title') + '</span>');
+		
+		// position the tooltip 4 pixels above and 4 pixels to the left of the abbreviation
+		var left = $(this).position().left -4
+		var top = $(this).position().top + $(this).height() ;
+		$(this).next().css('left',left);
+		$(this).next().css('top',top);				
+		
+	});
+	
+	/**
+	 * when abbreviations are clicked trigger their mouseover event then fade the tooltip
+	 * (this is friendly to touch interfaces)
+	 */
+	$('abbr').click(function(){
+		
+		$(this).mouseover();
+		
+		// after a slight 2 second fade, fade out the tooltip for 1 second
+		$(this).next().animate({opacity: 0.9},{duration: 2000, complete: function(){
+			$(this).fadeOut(1000);
+		}});
+		
+	});
+	
+	/**
+	 * Remove the tooltip on abbreviation mouseout
+	 */
+	$('abbr').mouseout(function(){
+			
+		$(this).next('.tooltip').remove();				
+
+	});	
+	
+});
+</script>
 {% endblock %}

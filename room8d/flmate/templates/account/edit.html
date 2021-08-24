@@ -200,14 +200,24 @@
         {% endfor %}
     </div>
     </div>
+    <div class='contacts'>
+        <label>Вы можете поделиться контактными данными с подходящими соседями</label>
+        <br>
+        {% for field in profile_form.visible_fields|slice:"24:27"  %}
+            {{field}}
+            <br>
+        {%endfor%}
+        <label>Эти поля не обязательные для заполнения, но так сосед найдет вас быстрее</label>
+    </div>
     <div class='notifications'>
-        {% for field in profile_form.visible_fields|slice:"24:"  %}
+        {% for field in profile_form.visible_fields|slice:"27:"  %}
         {{field.label_tag}}
         {{field}}
+        <br>
         {%endfor%}
     </div>
     {% csrf_token %}
-    <label id='specialMark'>Данные недоступны другим пользователям, не продаются и не публикуются ни при каких условиях. Поле "Пара слов о тебе" и ваше фото являются исключением, доступным для просмотра другими людьми, при условии что алгоритм счел этого человека подходящим для Вас!</label>
+    <label id='specialMark'>Данные недоступны другим пользователям, не продаются и не публикуются ни при каких условиях. Поля "Пара слов о тебе", "Имя", контактные данные и ваше фото являются исключением, доступным для просмотра другими людьми, при условии что алгоритм счел этого человека подходящим для Вас!</label>
     <input id='edbut' type="submit" value="Сохранить изменения">
 </form>
 {% block javascript %}
