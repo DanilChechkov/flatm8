@@ -94,7 +94,7 @@ def edit(request):
             myPets = str(me.get('aprPETS'))
             
             for you in profileList:
-                if you.get('active'):
+                if not you.get('active'):
                     UserToSwitch = User.objects.get(id=you.get('user_id'))
                     lastlog = UserToSwitch.last_login
                     lastpos = timezone.now()- td(days=14)
