@@ -53,7 +53,7 @@ class ProfileEditForm(forms.ModelForm):
             'abrGUEST':RadioSelect,
             'abrCOMMUNISM':RadioSelect,
             'aprPETS':RadioSelect,
-            'contInsta':TextInput(attrs={'placeholder': 'Ваш ник в инстаграмм без @'}),
+            'contInsta':TextInput(attrs={'placeholder': 'Ваш ник в инстаграм без @'}),
             'contTeleg':TextInput(attrs={'placeholder': 'Укажите ваш ник в TG'}),
             'contVKont':TextInput(attrs={'placeholder': 'Укажите тут ваш id ВК'}),
             'mesNotif':CheckboxInput,
