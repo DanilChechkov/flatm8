@@ -94,14 +94,6 @@ def edit(request):
             myPets = str(me.get('aprPETS'))
             
             for you in profileList:
-                if not you.get('active'):
-                    UserToSwitch = User.objects.get(id=you.get('user_id'))
-                    lastlog = UserToSwitch.last_login
-                    lastpos = timezone.now()- td(days=14)
-                    if lastpos<lastlog:
-                        #DEACTIVE PROFILE CUZ USER HAVEN'T VISIT SITE FOR 14 DAYS
-                        UserToSwitch.profile.active = True
-                        UserToSwitch.profile.save()
 
                 if not you.get('active'):
                     inactiveUser = User.objects.get(id=you.get('user_id'))
@@ -115,11 +107,12 @@ def edit(request):
                                 'Привет! Ты создал аккаунт, но не заполнил профиль на сайте=( Мы сможем подобрать тебе подходящего соседа, только когда ты закончишь этот шаг. Заходи на сайт во вкладку ПРОФИЛЬ! --> https://flatm8.ru/', 
                                     'flatmate@flatm8.ru')
                     if lastlog<lastpos:
-                        for chat in Chatroom.objects.all():
-                            if inactiveUser in chat.members.all():
-                                chat.delete()
-                        inactiveUser.profile.delete()
-                        inactiveUser.delete()
+                        print('wow b*tch')
+                        #for chat in Chatroom.objects.all():
+                        #    if inactiveUser in chat.members.all():
+                        #        chat.delete()
+                        #inactiveUser.profile.delete()
+                        #inactiveUser.delete()
                     continue
                 else:
                     UserToSwitch = User.objects.get(id=you.get('user_id'))
