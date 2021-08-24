@@ -97,7 +97,7 @@ def edit(request):
                 if you.get('active'):
                     UserToSwitch = User.objects.get(id=you.get('user_id'))
                     lastlog = UserToSwitch.last_login
-                    lastpos = timezone.now().date() - td(days=14)
+                    lastpos = timezone.now()- td(days=14)
                     if lastpos<lastlog:
                         #DEACTIVE PROFILE CUZ USER HAVEN'T VISIT SITE FOR 14 DAYS
                         UserToSwitch.profile.active = True
@@ -106,7 +106,7 @@ def edit(request):
                 if not you.get('active'):
                     inactiveUser = User.objects.get(id=you.get('user_id'))
                     lastlog = inactiveUser.last_login
-                    lastpos = timezone.now().date() - td(days=21)
+                    lastpos = timezone.now()- td(days=21)
                     if(inactiveUser.profile.aprTELLUS == 'Мне было лень это менять.'):
                         inactiveUser.profile.aprTELLUS = 'Мне было лень это менять!'
                         inactiveUser.profile.active = False
@@ -124,7 +124,7 @@ def edit(request):
                 else:
                     UserToSwitch = User.objects.get(id=you.get('user_id'))
                     lastlog = UserToSwitch.last_login
-                    lastpos = timezone.now().date() - td(days=14)
+                    lastpos = timezone.now()- td(days=14)
                     if lastlog<lastpos:
                         #DEACTIVE PROFILE CUZ USER HAVEN'T VISIT SITE FOR 14 DAYS
                         UserToSwitch.profile.active = False
