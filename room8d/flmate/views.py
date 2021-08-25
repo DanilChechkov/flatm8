@@ -98,13 +98,20 @@ def edit(request):
                     inactiveUser = User.objects.get(id=you.get('user_id'))
                     lastlog = inactiveUser.last_login
                     lastpos = timezone.now()- td(days=21)
+                    lastpos2= timezone.now()- td(days=14)
                     if lastlog<lastpos:
                         for chat in Chatroom.objects.all():
                             if inactiveUser in chat.members.all():
                                 chat.delete()
+                        inactiveUser.email_user("FLATMATE: До встречи!", 
+                                'Спасибо!\nТы замечательный человек и мы уверены - ты нашел своего соседа! Уже 3 недели как ты не заходил на сайт.\nЕсли мы снова понадобимся тебе или твоим друзьям --> https://flatm8.ru/ \nДо новых встреч, дорогой друг!', 
+                                    'flatmate@flatm8.ru')
                         inactiveUser.profile.delete()
                         inactiveUser.delete()
-                    continue
+                    if lastlog > lastpos2:
+                        inactiveUser.profile.active = True
+                        inactiveUser.profile.save()
+                
                 else:
                     UserToSwitch = User.objects.get(id=you.get('user_id'))
                     lastlog = UserToSwitch.last_login
@@ -113,7 +120,7 @@ def edit(request):
                         UserToSwitch.profile.active = False
                         UserToSwitch.profile.save()
                         UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
-                                'Привет! Сайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт, открой вкладку "ПРОФИЛЬ" и нажми сохранить изменения, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
+                                'Привет! Сайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт и твой профиль снова активируется, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
                                     'flatmate@flatm8.ru')
                         
                 if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
@@ -183,24 +190,10 @@ def edit(request):
                 chatlist = Chatroom.objects.values()
                 if checkChatr(mUser,hUser,chatlist,capa,subinte):
                     createChatroom(mUser,hUser,capa,subinte)
-                    #NOTIFICATION SYSTEM
-                    notifFILE = settings.BASE_DIR +'/notification.pkl'
-                    notiData = {}
                     if hUser.profile.chatNotif:
-                        if os.path.exists(notifFILE):
-                            with open(notifFILE, 'rb') as f:
-                                notiData = pickle.load(f)
-                        if not hUser.email in notiData.keys():
-                            notiData[hUser.email] = [timezone.now().date() -td(days=1),timezone.now().date() -td(days=1)]
-                        if timezone.now().date() > notiData[hUser.email][0]:
-                            hUser.email_user("FLATMATE - мы нашли тебе соседа!", 
-                                    'Привет! Мы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/\nЕсли что-то работает не так дай нам об этом знать - DanilChechkov@flatm8.ru', 
-                                        'flatmate@flatm8.ru')
-                            #txt = 'succes'
-                            #send_mail("TEST",txt,'flatmate@flatm8.ru',['danilchechkov@icloud.com'])
-                            notiData[hUser.email][0] = timezone.now().date()
-                        with open(notifFILE, 'wb') as f:
-                            pickle.dump(notiData, f)
+                        hUser.email_user("FLATMATE - мы нашли тебе соседа!", 
+                                'Привет! Мы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/ \nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/ \nЕсли что-то работает не так дай нам об этом знать - DanilChechkov@flatm8.ru', 
+                                    'flatmate@flatm8.ru')
                     #NOTIF SYS OVER
 
             checked = []
@@ -284,24 +277,13 @@ def messages(request,chat_id):
             message.save()
 
             #NOTIFICATION SYSTEM
-            notifFILE = settings.BASE_DIR +'/notification.pkl'
-            notiData = {}
             chat = Chatroom.objects.get(id=chat_id)
             cmembers = chat.members.all()
             hUser = cmembers[0] if cmembers[0]!=request.user else cmembers[1]
             if hUser.profile.mesNotif:
-                if os.path.exists(notifFILE):
-                    with open(notifFILE, 'rb') as f:
-                        notiData = pickle.load(f)
-                if not hUser.email in notiData.keys():
-                    notiData[hUser.email] = [timezone.now().date() -td(days=1),timezone.now().date() -td(days=1)]
-                if timezone.now().date()>notiData[hUser.email][1]:
-                    hUser.email_user("FLATMATE - у тебя новое сообщение!", 
-                            'Привет! Твой идеальный сосед уже написал тебе! --> https://flatm8.ru/dialogs/\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/\nЕсли что-то работает не так - дай нам об этом знать - DanilChechkov@flatm8.ru', 
-                                'flatmate@flatm8.ru')
-                    notiData[hUser.email][1] = timezone.now().date()
-                with open(notifFILE, 'wb') as f:
-                    pickle.dump(notiData, f)
+                hUser.email_user("FLATMATE - у тебя новое сообщение!", 
+                        'Привет! Твой идеальный сосед уже написал тебе! --> https://flatm8.ru/dialogs/ \nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/ \nЕсли что-то работает не так - дай нам об этом знать - DanilChechkov@flatm8.ru', 
+                            'flatmate@flatm8.ru')
             #NOTIF SYS OVER
         try:
             chat = Chatroom.objects.get(id=chat_id)
