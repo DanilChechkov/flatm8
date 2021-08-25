@@ -43,6 +43,11 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    lastlog = request.user.last_login
+                    lastpos2= timezone.now()- td(days=14)
+                    if lastlog > lastpos2:
+                        request.user.profile.active = True
+                        request.user.profile.save()
                     chats = Chatroom.objects.filter(members__in=[request.user.id])
                     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
                 else:
@@ -98,7 +103,6 @@ def edit(request):
                     inactiveUser = User.objects.get(id=you.get('user_id'))
                     lastlog = inactiveUser.last_login
                     lastpos = timezone.now()- td(days=21)
-                    lastpos2= timezone.now()- td(days=14)
                     if lastlog<lastpos:
                         for chat in Chatroom.objects.all():
                             if inactiveUser in chat.members.all():
@@ -108,10 +112,6 @@ def edit(request):
                                     'flatmate@flatm8.ru')
                         inactiveUser.profile.delete()
                         inactiveUser.delete()
-                    if lastlog > lastpos2:
-                        inactiveUser.profile.active = True
-                        inactiveUser.profile.save()
-                
                 else:
                     UserToSwitch = User.objects.get(id=you.get('user_id'))
                     lastlog = UserToSwitch.last_login
