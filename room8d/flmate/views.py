@@ -43,11 +43,12 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    lastlog = request.user.last_login
-                    lastpos2= timezone.now()- td(days=14)
-                    if lastlog > lastpos2:
-                        request.user.profile.active = True
-                        request.user.profile.save()
+                    if request.user.profile.abuBADIC:
+                        lastlog = request.user.last_login
+                        lastpos2= timezone.now()- td(days=14)
+                        if lastlog > lastpos2:
+                            request.user.profile.active = True
+                            request.user.profile.save()
                     chats = Chatroom.objects.filter(members__in=[request.user.id])
                     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
                 else:
