@@ -115,7 +115,7 @@ def edit(request):
                             if inactiveUser in chat.members.all():
                                 chat.delete()
                         inactiveUser.email_user("FLATMATE: До встречи!", 
-                                'Спасибо!\nТы замечательный человек и мы уверены - ты нашел своего соседа! Уже 3 недели как ты не заходил на сайт.\nЕсли мы снова понадобимся тебе или твоим друзьям --> https://flatm8.ru/ \nДо новых встреч, дорогой друг!', 
+                                'Спасибо, ' + hUser.username +'!\nТы замечательный человек и мы уверены - ты нашел своего соседа! Уже 3 недели как ты не заходил на сайт.\nЕсли мы снова понадобимся тебе или твоим друзьям --> https://flatm8.ru/ \nДо новых встреч, дорогой друг!', 
                                     'flatmate@flatm8.ru')
                         inactiveUser.profile.delete()
                         inactiveUser.delete()
@@ -127,7 +127,7 @@ def edit(request):
                         UserToSwitch.profile.active = False
                         UserToSwitch.profile.save()
                         UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
-                                'Привет! Сайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт и твой профиль снова активируется, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
+                                'Привет, ' + hUser.username +'!\nСайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт и твой профиль снова активируется, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
                                     'flatmate@flatm8.ru')
                         
                 if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
@@ -199,7 +199,7 @@ def edit(request):
                     createChatroom(mUser,hUser,capa,subinte)
                     if hUser.profile.chatNotif:
                         hUser.email_user("FLATMATE - мы нашли тебе соседа!", 
-                                'Привет! Мы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/ \nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/ \nЕсли что-то работает не так дай нам об этом знать - DanilChechkov@flatm8.ru', 
+                                'Привет, ' + hUser.username +'!\nМы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/ \nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/ \nЕсли что-то работает не так дай нам об этом знать DanilChechkov@flatm8.ru', 
                                     'flatmate@flatm8.ru')
                     #NOTIF SYS OVER
 
@@ -293,7 +293,7 @@ def messages(request,chat_id):
             hUser = cmembers[0] if cmembers[0]!=request.user else cmembers[1]
             if hUser.profile.mesNotif:
                 hUser.email_user("FLATMATE - у тебя новое сообщение!", 
-                        'Привет! Твой идеальный сосед уже написал тебе! --> https://flatm8.ru/dialogs/ \nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/ \nЕсли что-то работает не так - дай нам об этом знать - DanilChechkov@flatm8.ru', 
+                        'Привет, ' + hUser.username +'!\nТвой идеальный сосед уже написал тебе!\n' + request.user.username + ' --> https://flatm8.ru/dialogs/ \nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/ \nЕсли что-то работает не так - дай нам об этом знать DanilChechkov@flatm8.ru', 
                             'flatmate@flatm8.ru')
             #NOTIF SYS OVER
         try:
