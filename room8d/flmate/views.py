@@ -252,7 +252,11 @@ def dialog(request):
     #for email in dat:
         #if timezone.now().date() > dat[email][0]:
     #    print(email,dat[email],sep='\t')
-    chats = Chatroom.objects.filter(members__in=[request.user.id])
+    chats1 = Chatroom.objects.filter(members__in=[request.user.id]).order_by('-message','-cap')
+    chats = []
+    for x in chats1:
+        if x not in chats:
+            chats.append(x)
     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
 
 @login_required
