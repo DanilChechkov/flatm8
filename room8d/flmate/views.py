@@ -72,6 +72,12 @@ def edit(request):
             chats = Chatroom.objects.filter(members__in=[request.user.id])
             profileList = Profile.objects.values()
             request.user.profile.active = True
+            if request.user.profile.contInsta[:1] == "@":
+                request.user.profile.contInsta = request.user.profile.contInsta[1:]
+            if request.user.profile.contTeleg[:1] == "@":
+                request.user.profile.contTeleg = request.user.profile.contTeleg[1:]
+            if request.user.profile.contVKont[:1] == "@":
+                request.user.profile.contVKont = request.user.profile.contVKont[1:]
             request.user.profile.save()
 
             
