@@ -199,7 +199,10 @@ def edit(request):
                     createChatroom(mUser,hUser,capa,subinte)
                     if hUser.profile.chatNotif:
                         hUser.email_user("FLATMATE - мы нашли тебе соседа!", 
-                                'Привет, ' + hUser.username +'!\nМы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/ \nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/ \nЕсли что-то работает не так дай нам об этом знать DanilChechkov@flatm8.ru', 
+                                'Привет, ' + hUser.username +'!'+
+                                '\nМы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/'+
+                                '\n\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/'+
+                                '\nЕсли что-то работает не так дай нам об этом знать DanilChechkov@flatm8.ru', 
                                     'flatmate@flatm8.ru')
                     #NOTIF SYS OVER
 
@@ -293,7 +296,11 @@ def messages(request,chat_id):
             hUser = cmembers[0] if cmembers[0]!=request.user else cmembers[1]
             if hUser.profile.mesNotif:
                 hUser.email_user("FLATMATE - у тебя новое сообщение!", 
-                        'Привет, ' + hUser.username +'!\nТвой идеальный сосед уже написал тебе!\n' + request.user.username + ' --> https://flatm8.ru/dialogs/ \nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/ \nЕсли что-то работает не так - дай нам об этом знать DanilChechkov@flatm8.ru', 
+                        'Привет, ' + hUser.username + '!'+
+                        '\nТвой идеальный сосед уже написал тебе:\n' + 
+                        request.user.username +': '+str(message) + ' --> https://flatm8.ru/messages/'+chat_id +
+                        '\n\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/'+
+                        '\nЕсли что-то работает не так - дай нам об этом знать DanilChechkov@flatm8.ru', 
                             'flatmate@flatm8.ru')
             #NOTIF SYS OVER
         try:
