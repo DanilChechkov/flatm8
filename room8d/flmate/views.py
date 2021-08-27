@@ -119,6 +119,7 @@ def edit(request):
                                     'flatmate@flatm8.ru')
                         inactiveUser.profile.delete()
                         inactiveUser.delete()
+                    continue
                 else:
                     UserToSwitch = User.objects.get(id=you.get('user_id'))
                     lastlog = UserToSwitch.last_login
