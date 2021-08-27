@@ -130,7 +130,8 @@ def edit(request):
                         UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
                                 'Привет, ' + hUser.username +'!\nСайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт и твой профиль снова активируется, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
                                     'flatmate@flatm8.ru')
-                        
+                        continue    #IF EVERYTHING F*CK UP DELETE THIS LINE
+                         
                 if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
                 points = 0
                 frtme = 0
