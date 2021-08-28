@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.views.generic import View
 from django.urls import reverse_lazy
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login,logout
 
 import datetime
 from django.utils import timezone
@@ -202,11 +202,17 @@ def edit(request):
                                 'Привет, ' + hUser.username +'!'+
                                 '\nМы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/'+
                                 '\n\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/'+
-                                '\nЕсли что-то работает не так дай нам об этом знать DanilChechkov@flatm8.ru', 
+                                '\nЕсли ты уже нашел соседа, то аккаунт можно удалить тут в самом низу--> https://flatm8.ru/edit/'+
+                                '\n\nЕсли что-то работает не так дай нам об этом знать DanilChechkov@flatm8.ru', 
                                     'flatmate@flatm8.ru')
                     #NOTIF SYS OVER
 
             checked = []
+            chats1 = Chatroom.objects.filter(members__in=[request.user.id]).order_by('-message','sub','-cap')
+            chats = []
+            for x in chats1:
+                if x not in chats:
+                    chats.append(x)
             return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
         else:
             #THAT IS F*CK UP
@@ -246,6 +252,20 @@ def createChatroom(mUser,hUser,cap,sub):
     ourchat.save()
     ourchat.members.add(hUser)
     ourchat.save()
+
+@login_required
+def delete_me(request):
+    for chat in Chatroom.objects.all():
+        if request.user in chat.members.all():
+            chat.delete()
+    request.user.email_user("FLATMATE: До встречи!", 
+                    'Спасибо, ' + request.user.username +
+                    '!\nТы замечательный человек и мы уверены - ты нашел своего ИДЕАЛЬНОГО соседа!\nЕсли мы снова понадобимся тебе или твоим друзьям --> https://flatm8.ru/ \nУдачи, дорогой друг!', 
+                        'flatmate@flatm8.ru')
+    request.user.profile.delete()
+    request.user.delete()
+    logout(request)
+    return render(request, 'account/index.html',{'section':'index'})
 
 @login_required
 def lastAct(req):
@@ -315,7 +335,8 @@ def messages(request,chat_id):
                         '\nТвой идеальный сосед уже написал тебе:\n' + 
                         request.user.username +': '+str(message) + ' --> https://flatm8.ru/messages/'+chat_id +
                         '\n\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/'+
-                        '\nЕсли что-то работает не так - дай нам об этом знать DanilChechkov@flatm8.ru', 
+                        '\nЕсли ты уже нашел соседа, то аккаунт можно удалить тут в самом низу--> https://flatm8.ru/edit/'+
+                        '\n\nЕсли что-то работает не так - дай нам об этом знать DanilChechkov@flatm8.ru', 
                             'flatmate@flatm8.ru')
             #NOTIF SYS OVER
         try:
