@@ -190,7 +190,7 @@ def edit(request):
                 if len(badInter)>0: points +=1
                 #SAVING ROOMATES
                 capa = 100*points/31
-
+                if capa<70: continue
                 
                 mUser = User.objects.get(id=me.get('user_id'))
                 hUser = User.objects.get(id=you.get('user_id'))
@@ -262,7 +262,6 @@ def lastAct(req):
 
 @login_required
 def dialog(request):
-    print(timezone.now().date()- td(days=14))
     lastAct(request)
     #dat = {}
     #with open(settings.BASE_DIR +'/notification.pkl', 'rb') as f:
@@ -270,7 +269,7 @@ def dialog(request):
     #for email in dat:
         #if timezone.now().date() > dat[email][0]:
     #    print(email,dat[email],sep='\t')
-    chats1 = Chatroom.objects.filter(members__in=[request.user.id]).order_by('-message','-cap')
+    chats1 = Chatroom.objects.filter(members__in=[request.user.id]).order_by('-message','sub','-cap')
     chats = []
     for x in chats1:
         if x not in chats:
