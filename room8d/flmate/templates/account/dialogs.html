@@ -6,7 +6,7 @@
     {% load tz %}
     {% load flmate_extras %}
     {% load static %}
-    {% if chats.count == 0 %}
+    {% if not chats %}
         <div class="panel panel-body">Подходящие соседи пока не найдены. Заполните профиль и как только тут что-то изменится - мы вас уведомим!</div>
     {% endif %}
     <div class="diaLine">

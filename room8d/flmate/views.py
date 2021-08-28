@@ -249,13 +249,14 @@ def createChatroom(mUser,hUser,cap,sub):
 
 @login_required
 def lastAct(req):
-    if not req.user.profile.last_activity:
-        req.user.profile.last_activity = timezone.now().date()
-    if req.user.profile.last_activity < timezone.now().date():
+    if req.user.profile.abuBADIC:
         print('WOW')
-        req.user.profile.last_activity = timezone.now().date()
-        req.user.profile.active = True
-    req.user.profile.save()
+        if not req.user.profile.last_activity:
+            req.user.profile.last_activity = timezone.now().date()
+        if req.user.profile.last_activity < timezone.now().date():
+            req.user.profile.last_activity = timezone.now().date()
+            req.user.profile.active = True
+        req.user.profile.save()
     
     
 
