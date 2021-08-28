@@ -43,6 +43,8 @@ class ProfileEditForm(forms.ModelForm):
             'abrTEMP':NumberInput(attrs={'min': '12','max':'28'}),
             'abuBADIC':s2forms.Select2MultipleWidget({'data-language': 'ru','style':"width: 100%"}),
             'aprFRETM':s2forms.Select2MultipleWidget({'data-language': 'ru','style':"width: 100%"}),
+            'rmAgeL':NumberInput(attrs={'min': '16','max':'99'}),
+            'rmAgeU':NumberInput(attrs={'min': '16','max':'99'}),
             'rntSubway':s2forms.Select2MultipleWidget({'data-language': 'ru','style':"width: 100%"}),
             'rntUPrice':NumberInput(attrs={'min': '1000','max':'99999','step':'500'}),
             'rntLPrice':NumberInput(attrs={'min': '1000','max':'99999','step':'500'}),
@@ -67,7 +69,7 @@ class LoginForm(forms.Form):
     password= forms.CharField(widget=forms.PasswordInput,label='Пароль')
 
 class UserRegistrationForm(forms.ModelForm):
-    username = forms.CharField(label='Логин',widget=forms.TextInput)
+    username = forms.CharField(label='Логин',widget=forms.TextInput(attrs={"maxlength":16}))
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Повторите пароль', widget=forms.PasswordInput)
 

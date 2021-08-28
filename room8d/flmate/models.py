@@ -7,6 +7,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from multiselectfield import MultiSelectField
 from django.urls import reverse
+import datetime
+from django.utils import timezone
 
 
 class Chatroom(models.Model):
@@ -223,6 +225,7 @@ class Profile(models.Model):
     mesNotif= models.BooleanField(default=True,verbose_name='Уведомлять меня о новых сообщения:')
     chatNotif= models.BooleanField(default=True,verbose_name='Уведомлять меня о новых соседях:')
     active= models.BooleanField(default=False)
+    last_activity=models.DateField(max_length=150,default=timezone.now,blank=True)
 
     def __str__(self):
         return 'Profile for user {}'.format(self.user.username)

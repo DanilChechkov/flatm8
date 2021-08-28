@@ -7,7 +7,7 @@ from django.views.generic import View
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
 
-import datetime, os,pickle
+import datetime
 from django.utils import timezone
 from datetime import timedelta as td
 from .models import Profile,Chatroom
@@ -43,12 +43,13 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    #if request.user.profile.abuBADIC:
-                    #    lastlog = request.user.last_login
-                    #    lastpos2= timezone.now()- td(days=14)
-                    #    if lastlog > lastpos2:
-                    #        request.user.profile.active = True
-                    #        request.user.profile.save()
+                    lastAct(request)
+                    if request.user.profile.abuBADIC:
+                        lastlog = request.user.profile.last_activity
+                        lastpos2= timezone.now().date()- td(days=14)
+                        if lastlog > lastpos2:
+                            request.user.profile.active = True
+                            request.user.profile.save()
                     chats = Chatroom.objects.filter(members__in=[request.user.id])
                     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
                 else:
@@ -63,6 +64,7 @@ def user_login(request):
 
 @login_required
 def edit(request):
+    lastAct(request)
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user, data=request.POST)
         profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
@@ -107,33 +109,32 @@ def edit(request):
             
             for you in profileList:
                 if not you.get('active'):
-                    #inactiveUser = User.objects.get(id=you.get('user_id'))
-
-                    #lastlog = inactiveUser.last_login
-                    #lastpos = timezone.now()- td(days=21)
-                    #if lastlog:
-                    #    if lastlog<lastpos:
-                    #        for chat in Chatroom.objects.all():
-                    #            if inactiveUser in chat.members.all():
-                    #                chat.delete()
-                    #        inactiveUser.email_user("FLATMATE: До встречи!", 
-                    #                'Спасибо, ' + hUser.username +'!\nТы замечательный человек и мы уверены - ты нашел своего соседа! Уже 3 недели как ты не заходил на сайт.\nЕсли мы снова понадобимся тебе или твоим друзьям --> https://flatm8.ru/ \nДо новых встреч, дорогой друг!', 
-                    #                    'flatmate@flatm8.ru')
-                    #        inactiveUser.profile.delete()
-                    #        inactiveUser.delete()
+                    inactiveUser = User.objects.get(id=you.get('user_id'))
+                    lastlog = inactiveUser.profile.last_activity
+                    lastpos = timezone.now().date()- td(days=21)
+                    if lastlog:
+                        if lastlog<lastpos:
+                            for chat in Chatroom.objects.all():
+                                if inactiveUser in chat.members.all():
+                                    chat.delete()
+                            inactiveUser.email_user("FLATMATE: До встречи!", 
+                                    'Спасибо, ' + hUser.username +'!\nТы замечательный человек и мы уверены - ты нашел своего соседа! Уже 3 недели как ты не заходил на сайт.\nЕсли мы снова понадобимся тебе или твоим друзьям --> https://flatm8.ru/ \nДо новых встреч, дорогой друг!', 
+                                        'flatmate@flatm8.ru')
+                            inactiveUser.profile.delete()
+                            inactiveUser.delete()
                     continue
-                #else:
-                    #UserToSwitch = User.objects.get(id=you.get('user_id'))
-                    #lastlog = UserToSwitch.last_login
-                    #if lastlog:
-                    #    lastpos = timezone.now()- td(days=14)
-                    #    if lastlog<=lastpos:
-                    #        UserToSwitch.profile.active = False
-                    #        UserToSwitch.profile.save()
-                    #        UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
-                    #                'Привет, ' + hUser.username +'!\nСайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт и твой профиль снова активируется, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
-                    #                    'flatmate@flatm8.ru')
-                    #        continue    #IF EVERYTHING F*CK UP DELETE THIS LINE
+                else:
+                    UserToSwitch = User.objects.get(id=you.get('user_id'))
+                    lastlog = UserToSwitch.profile.last_activity
+                    if lastlog:
+                        lastpos = timezone.now().date()- td(days=14)
+                        if lastlog<=lastpos:
+                            UserToSwitch.profile.active = False
+                            UserToSwitch.profile.save()
+                            UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
+                                    'Привет, ' + hUser.username +'!\nСайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт и твой профиль снова активируется, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
+                                        'flatmate@flatm8.ru')
+                            continue    #IF EVERYTHING F*CK UP DELETE THIS LINE
                          
                 if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
                 points = 0
@@ -253,7 +254,21 @@ def createChatroom(mUser,hUser,cap,sub):
     ourchat.save()
 
 @login_required
+def lastAct(req):
+    if not req.user.profile.last_activity:
+        req.user.profile.last_activity = timezone.now().date()
+        req.user.profile.save()
+    if req.user.profile.last_activity < timezone.now().date():
+        print('WOW')
+        req.user.profile.last_activity = timezone.now().date()
+        req.user.profile.save()
+    
+    
+
+@login_required
 def dialog(request):
+    print(timezone.now().date()- td(days=14))
+    lastAct(request)
     #dat = {}
     #with open(settings.BASE_DIR +'/notification.pkl', 'rb') as f:
     #    dat =pickle.load(f)
@@ -269,6 +284,7 @@ def dialog(request):
 
 @login_required
 def messages(request,chat_id):
+    lastAct(request)
     if request.method == 'GET':
         try:
             chat = Chatroom.objects.get(id=chat_id)
