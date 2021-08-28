@@ -44,12 +44,6 @@ def user_login(request):
                 if user.is_active:
                     login(request, user)
                     lastAct(request)
-                    if request.user.profile.abuBADIC:
-                        lastlog = request.user.profile.last_activity
-                        lastpos2= timezone.now().date()- td(days=14)
-                        if lastlog > lastpos2:
-                            request.user.profile.active = True
-                            request.user.profile.save()
                     chats = Chatroom.objects.filter(members__in=[request.user.id])
                     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
                 else:
@@ -257,11 +251,11 @@ def createChatroom(mUser,hUser,cap,sub):
 def lastAct(req):
     if not req.user.profile.last_activity:
         req.user.profile.last_activity = timezone.now().date()
-        req.user.profile.save()
     if req.user.profile.last_activity < timezone.now().date():
         print('WOW')
         req.user.profile.last_activity = timezone.now().date()
-        req.user.profile.save()
+        req.user.profile.active = True
+    req.user.profile.save()
     
     
 
