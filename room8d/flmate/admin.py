@@ -10,11 +10,12 @@ admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user','active','last_activity','urAge','contInsta','contTeleg','contVKont', 'rmAgeL','rmAgeU','aprUGEN','aprR8GEN','aprTELLUS','photo','chatNotif','mesNotif']
+    list_display = ['user','active','rntCity','last_activity','urAge','contInsta','contTeleg','contVKont','aprTELLUS','photo','chatNotif','mesNotif']
                 #['user','active', 'urAge', 'rmAgeL','rmAgeU','rntLPrice','rntUPrice','rntTime','rntSubway',
                 #'abuLST','abuCOMU','abuBADIC','abuORGL',
                 #'abrTEMP','abrSOUL','abrCLEAN','abrGUEST','abrCOMMUNISM',
                 #'aprUGEN','aprR8GEN','aprURRELIGY','aprR8RELIGY','aprFRETM','aprPETS','aprTELLUS','photo']
+                # 'rmAgeL','rmAgeU','aprUGEN','aprR8GEN',
 class MessageAdmin(admin.ModelAdmin):
     list_display = ['chat','is_readed','author','message']
 class ChatAdmin(admin.ModelAdmin):
