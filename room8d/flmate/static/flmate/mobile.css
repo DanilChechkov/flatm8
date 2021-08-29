@@ -481,6 +481,22 @@ div.radiobt3 ul li label{
     font-size: 5vw!important;
     color:#006907;
   }
+div#abrent select#id_rntCity{
+    position: relative;
+    text-align-last: center;
+    width: 70%;
+    margin-bottom: 1.5vh;
+    left: 5vw;
+    padding: 0.8vh 0;
+    box-sizing: border-box;
+    border: solid 0.5vw #00c70d;
+    font-family: Raleway;
+    font-size: 5vw;
+    border-radius:2vw;
+    background-color: #ffffff;
+    margin-left: auto;
+    margin-right: auto;
+}
   
 div.radiobt3 input[type=radio]:checked ~ label {
     color: #006907;

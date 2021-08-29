@@ -28,14 +28,11 @@ class UserEditForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-
-        #rntTime = forms.ChoiceField(choices=TM_CHOICES,widget=RadioSelect)
         fields = ('photo','urAge','aprUGEN', 'abuCOMU','abuORGL','abrCLEAN','aprURRELIGY','abuBADIC','aprTELLUS',
                 'abuLST','aprPETS','abrTEMP','aprFRETM',
                 'rmAgeL','rmAgeU','aprR8GEN','aprR8RELIGY',
-                'rntLPrice','rntUPrice','rntTime','rntSubway','abrGUEST','abrSOUL','abrCOMMUNISM',
+                'rntLPrice','rntUPrice','rntTime','rntCity','rntSubway','rntSubwayM','abrGUEST','abrSOUL','abrCOMMUNISM',
                 'contInsta','contTeleg','contVKont','mesNotif','chatNotif')
-        #fields = "__all__"
         widgets = {
             'urAge':NumberInput(attrs={'min': '16','max':'99'}),
             'abuORGL':NumberInput(attrs={'min': '0','max':'10'}),
@@ -46,6 +43,7 @@ class ProfileEditForm(forms.ModelForm):
             'rmAgeL':NumberInput(attrs={'min': '16','max':'99'}),
             'rmAgeU':NumberInput(attrs={'min': '16','max':'99'}),
             'rntSubway':s2forms.Select2MultipleWidget({'data-language': 'ru','style':"width: 100%"}),
+            'rntSubwayM':s2forms.Select2MultipleWidget({'data-language': 'ru','style':"width: 100%"}),
             'rntUPrice':NumberInput(attrs={'min': '1000','max':'99999','step':'500'}),
             'rntLPrice':NumberInput(attrs={'min': '1000','max':'99999','step':'500'}),
             'rntTime':RadioSelect,

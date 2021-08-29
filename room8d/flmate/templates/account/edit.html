@@ -159,7 +159,7 @@
         <h2>О квартире</h2>
         <label>Цена за квартиру:</label>
         <div class='row'>
-        {% for field in profile_form.visible_fields|slice:"17:24"  %}
+        {% for field in profile_form.visible_fields|slice:"17:26"  %}
             {% if field.name == 'rntTime'%}
             </div>
             {{field.label_tag}}
@@ -187,7 +187,11 @@
             </div>
             
         {% else %}
+        <br>
+        
+        {%if field.name != 'rntSubwayM' %}
         {{field.label_tag}}
+        {%endif%}
         {{field}}
         {% if field.errors%}
             {% for error in field.errors %}
@@ -203,14 +207,14 @@
     <div class='contacts'>
         <label>Вы можете поделиться контактными данными с подходящими соседями</label>
         <br>
-        {% for field in profile_form.visible_fields|slice:"24:27"  %}
+        {% for field in profile_form.visible_fields|slice:"26:29"  %}
             {{field}}
             <br>
         {%endfor%}
         <label>Эти поля не обязательные для заполнения, но так сосед найдет вас быстрее</label>
     </div>
     <div class='notifications'>
-        {% for field in profile_form.visible_fields|slice:"27:"  %}
+        {% for field in profile_form.visible_fields|slice:"29:"  %}
         {{field.label_tag}}
         {{field}}
         <br>
@@ -227,6 +231,24 @@
 <script rel='JavaScript' type="text/javascript">
     $(document).ready(function() {
     $('.django-select2').select2();
+    if ($('#id_rntCity').val() == 'spb') {
+        $('#id_rntSubwayM').next(".select2-container").hide();
+    }
+    else{
+        $('#id_rntSubway').next(".select2-container").hide();
+    }
     }); </script>
+<script>
+    $(document).on('change', '#id_rntCity', function () {
+        if ($(this).val() == 'spb') {
+        $('#id_rntSubwayM').next(".select2-container").hide();
+        $('#id_rntSubway').next(".select2-container").show();
+        }
+    else{
+        $('#id_rntSubway').next(".select2-container").hide();
+        $('#id_rntSubwayM').next(".select2-container").show();
+        }
+});
+</script>
 {% endblock %}
 {% endblock %}

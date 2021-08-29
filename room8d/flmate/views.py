@@ -84,7 +84,11 @@ def edit(request):
             myRAge = [int(me.get('rmAgeL')),int(me.get('rmAgeU'))]
             myPrice = [int(me.get('rntLPrice')),int(me.get('rntUPrice'))]
             myRTime = str(me.get('rntTime'))
-            mySubway = [ x for x in me.get('rntSubway')]
+            myCity = str(me.get('rntCity'))
+            if myCity == 'spb':
+                mySubway = [ x for x in me.get('rntSubway')]
+            else:
+                mySubway = [ x for x in me.get('rntSubwayM')]
             myHrono = str(me.get('abuLST'))
             myCOMU = str(me.get('abuCOMU'))
             myBadic = [ x for x in me.get('abuBADIC')]
@@ -131,6 +135,8 @@ def edit(request):
                             continue    #IF EVERYTHING F*CK UP DELETE THIS LINE
                          
                 if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
+                hCity = str(you.get('rntCity'))
+                if myCity != hCity:continue
                 points = 0
                 frtme = 0
                 subinte=0
@@ -139,7 +145,10 @@ def edit(request):
                 hRAge = [int(you.get('rmAgeL')),int(you.get('rmAgeU'))]
                 hPrice = [int(you.get('rntLPrice')),int(you.get('rntUPrice'))]
                 hRTime = str(you.get('rntTime'))
-                hSubway = [ x for x in you.get('rntSubway')]
+                if hCity == 'spb':
+                    hSubway = [ x for x in you.get('rntSubway')]
+                else:
+                    hSubway = [ x for x in you.get('rntSubwayM')]
                 hHrono = str(you.get('abuLST'))
                 hCOMU = str(you.get('abuCOMU'))
                 hBadic = [ x for x in you.get('abuBADIC')]
