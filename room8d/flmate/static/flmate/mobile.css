@@ -902,3 +902,12 @@ div.mestxt{
 div.mesbody-unreaded{
     background-color: #c0c0c0;
 }
+/*VK CONNECTION*/
+div.VKPost{
+    width: 90vw;
+    margin-bottom: 5vh;
+    margin-left: auto;
+    margin-right: auto; 
+    border-radius: 2vw;
+    border: .5vh solid #538FB7;
+}

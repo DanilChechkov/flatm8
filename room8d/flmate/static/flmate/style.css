@@ -1088,3 +1088,36 @@ div.mestxt{
 div.mesbody-unreaded{
     background-color: #c0c0c0;
 }
+/*VK PAGE*/
+/*
+div.VKCol
+{
+    display: flex;
+    flex-direction: column;
+    width: 40vw;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 7vh;
+}
+div.VKRow{
+    width: 95vw;
+    display: flex;
+    flex-direction: row;  
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div.VKSoci{
+    position: fixed;
+    right:20vw;
+    bottom:10vh;
+    width: 20vw;
+}*/
+div.VKPost{
+    width: 45vw;
+    margin-bottom: 10vh;
+    margin-left: auto;
+    margin-right: auto; 
+    border-radius: .5vw;
+    border: .5vh solid #538FB7;
+}

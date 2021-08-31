@@ -13,10 +13,11 @@ from datetime import timedelta as td
 from .models import Profile,Chatroom
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm,MessageForm,LoginForm
 from room8d import settings
-from django.core.mail import send_mail
 
 def index(request):
     return render(request, 'account/index.html',{'section':'index'})
+def vk(request):
+    return render(request, 'account/vk.html',{'section':'vk'})
 def google(request):
     return render(request, 'account/google3a35c7ffe9c8fa8e.html',{'section':'google'})
 
