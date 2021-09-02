@@ -29,7 +29,7 @@ with open(os.path.join(BASE_DIR, "skey"),'r') as f:
     SECRET_KEY = f.read()[:-1]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['www.flatm8.ru','flatm8.ru','127.0.0.1','192.168.0.14']
 
