@@ -29,7 +29,7 @@ with open(os.path.join(BASE_DIR, "skey"),'r') as f:
     SECRET_KEY = f.read()[:-1]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['www.flatm8.ru','flatm8.ru','127.0.0.1','192.168.0.14']
 
@@ -142,8 +142,8 @@ MANAGERS = ADMINS
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = 'static/'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = 'media/'
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
