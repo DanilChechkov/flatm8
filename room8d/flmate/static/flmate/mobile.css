@@ -694,6 +694,18 @@ img#uPh{
     border: .5vh solid #538FB7;
     border-radius: 100vw;
 }
+p.city{
+    position: absolute;
+    top:-1vh;
+    left:0.5vw;
+    font-family: Poppins;
+    font-weight: bold;
+    font-size: 4vw;
+    text-align: center;
+    overflow: hidden;
+
+    color: rgba(43, 117, 166, 0.9);
+}
 p.uname{
     position: absolute;
     top:25vh;

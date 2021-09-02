@@ -17,6 +17,7 @@
         {% endif %}
         <div class='diaBlock'>
             {% get_companion user chat as companion %}
+            <p class="city">{{ companion.profile.rntCity }}</p>
             <abbr title='{{ companion.first_name }}'><img id='uPh' src='{{companion.profile.photo.url}}'></abbr>
             <p class="uname">{{ companion.username }}</p>
             <abbr title="Твоя совместимость с потенциальным соседом"><p class='cap'>{{chat.cap}}%</p></abbr>
