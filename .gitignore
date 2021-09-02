@@ -11,3 +11,5 @@ room8d/media/
 room8d/static
 room8d/static/
 room8d/room8d/settings.py
+room8d/room8d/__pycache__
+room8d/room8d/__pycache__/
