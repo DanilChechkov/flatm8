@@ -6,3 +6,8 @@ room8d/flmate/migrations
 room8d/flmate/migrations/
 room8d/media/users/2021
 room8d/media/users/2021/
+room8d/media
+room8d/media/
+room8d/static
+room8d/static/
+room8d/room8d/settings.py
