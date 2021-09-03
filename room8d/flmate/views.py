@@ -66,7 +66,6 @@ def edit(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            chats = Chatroom.objects.filter(members__in=[request.user.id])
             profileList = Profile.objects.values()
             request.user.profile.active = True
             if request.user.profile.contInsta[:1] == "@":
@@ -75,12 +74,16 @@ def edit(request):
                 request.user.profile.contTeleg = request.user.profile.contTeleg[1:]
             if request.user.profile.contVKont[:1] == "@":
                 request.user.profile.contVKont = request.user.profile.contVKont[1:]
+            if request.user.profile.contVKont[:15] == "https://vk.com/":
+                request.user.profile.contVKont = request.user.profile.contVKont[15:]
+            if request.user.profile.contVKont[-1:] == "/":
+                request.user.profile.contVKont = request.user.profile.contVKont[:-1]
             request.user.profile.save()
 
             
-            now = datetime.datetime.now()
             checked = []
             me = request.user.profile.__class__.objects.filter(pk=request.user.profile.id).values().first()
+            mUser = User.objects.get(id=me.get('user_id'))
             myAge = int(me.get('urAge'))
             myRAge = [int(me.get('rmAgeL')),int(me.get('rmAgeU'))]
             myPrice = [int(me.get('rntLPrice')),int(me.get('rntUPrice'))]
@@ -107,45 +110,49 @@ def edit(request):
             myPets = str(me.get('aprPETS'))
             
             for you in profileList:
+                hUser = User.objects.get(id=you.get('user_id'))
                 if not you.get('active'):
-                    inactiveUser = User.objects.get(id=you.get('user_id'))
-                    lastlog = inactiveUser.profile.last_activity
+                    lastlog = hUser.profile.last_activity
                     lastpos = timezone.now().date()- td(days=21)
                     if lastlog:
                         if lastlog<lastpos:
                             for chat in Chatroom.objects.all():
-                                if inactiveUser in chat.members.all():
+                                if hUser in chat.members.all():
                                     chat.delete()
-                            inactiveUser.email_user("FLATMATE: До встречи!", 
+                            hUser.email_user("FLATMATE: До встречи!", 
                                     'Спасибо, ' + hUser.username +'!\nТы замечательный человек и мы уверены - ты нашел своего соседа! Уже 3 недели как ты не заходил на сайт.\nЕсли мы снова понадобимся тебе или твоим друзьям --> https://flatm8.ru/ \nДо новых встреч, дорогой друг!', 
                                         'flatmate@flatm8.ru')
-                            inactiveUser.profile.delete()
-                            inactiveUser.delete()
+                            hUser.profile.delete()
+                            hUser.delete()
                     continue
                 else:
-                    UserToSwitch = User.objects.get(id=you.get('user_id'))
-                    lastlog = UserToSwitch.profile.last_activity
+                    lastlog = hUser.profile.last_activity
                     if lastlog:
                         lastpos = timezone.now().date()- td(days=14)
                         if lastlog<=lastpos:
-                            UserToSwitch.profile.active = False
-                            UserToSwitch.profile.save()
-                            UserToSwitch.email_user("FLATMATE - твой аккаунт деактивирован!", 
+                            hUser.profile.active = False
+                            hUser.profile.save()
+                            hUser.email_user("FLATMATE - твой аккаунт деактивирован!", 
                                     'Привет, ' + hUser.username +'!\nСайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт и твой профиль снова активируется, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
                                         'flatmate@flatm8.ru')
-                            continue    #IF EVERYTHING F*CK UP DELETE THIS LINE
-                         
+                            continue    #IF EVERYTHING F*CK UP DELETE THIS LINE    
                 if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
                 hCity = str(you.get('rntCity'))
+                #FILTER
                 if myCity != hCity:continue
                 points = 0
-                frtme = 0
                 subinte=0
 
                 hAge = int(you.get('urAge'))
                 hRAge = [int(you.get('rmAgeL')),int(you.get('rmAgeU'))]
+                #FILTER
+                if not hRAge[0]<=myAge<=hRAge[1] or not myRAge[0]<=hAge<=myRAge[1]: continue
                 hPrice = [int(you.get('rntLPrice')),int(you.get('rntUPrice'))]
+                #FILTER
+                if not (hPrice[0]<=myPrice[1]<=hPrice[1] or myPrice[0]<=hPrice[1]<=myPrice[1]):continue
                 hRTime = str(you.get('rntTime'))
+                #FILTER
+                if myRTime != hRTime: continue
                 if hCity == 'spb':
                     hSubway = [ x for x in you.get('rntSubway')]
                 else:
@@ -161,20 +168,19 @@ def edit(request):
                 hmoL = str(you.get('abrCOMMUNISM'))
                 hGen = str(you.get('aprUGEN'))
                 hRGen = str(you.get('aprR8GEN'))
+                #FILTER
+                if not ((hRGen == myGen or hRGen == 'inbetween') and (myRGen == hGen or myRGen == 'inbetween')): continue
                 hRel = str(you.get('aprURRELIGY'))
                 hRRel = str(you.get('aprR8RELIGY'))
+                #FILTER
+                if not ((hRRel == myRel or hRRel == 'nosing') and (myRRel == hRel or myRRel == 'nosing')): continue
+                chatlist = Chatroom.objects.values()
+                if checkChatr(mUser,hUser,chatlist): continue   
                 hFrtime = [ x for x in you.get('aprFRETM')]
                 hPets = str(you.get('aprPETS'))
 
                 checked.append([me.get('user_id'),you.get('user_id')])
                 checked.append([you.get('user_id'),me.get('user_id')])
-
-                #MAIN FILTERS: AGE,PRICE,RELIGY,GENDER,
-                if not hRAge[0]<=myAge<=hRAge[1] or not myRAge[0]<=hAge<=myRAge[1]: continue
-                if not (hPrice[0]<=myPrice[1]<=hPrice[1] or myPrice[0]<=hPrice[1]<=myPrice[1]):continue
-                if not ((hRRel == myRel or hRRel == 'nosing') and (myRRel == hRel or myRRel == 'nosing')): continue
-                if not ((hRGen == myGen or hRGen == 'inbetween') and (myRGen == hGen or myRGen == 'inbetween')): continue
-                if myRTime != hRTime: continue
                 points += 15
 
                 #COUNT POINTS, NOT VERY IMPORTANT POINTS
@@ -201,20 +207,15 @@ def edit(request):
                 #SAVING ROOMATES
                 capa = 100*points/31
                 if capa<70: continue
-                
-                mUser = User.objects.get(id=me.get('user_id'))
-                hUser = User.objects.get(id=you.get('user_id'))
-                chatlist = Chatroom.objects.values()
-                if checkChatr(mUser,hUser,chatlist,capa,subinte):
-                    createChatroom(mUser,hUser,capa,subinte)
-                    if hUser.profile.chatNotif:
-                        hUser.email_user("FLATMATE - мы нашли тебе соседа!", 
-                                'Привет, ' + hUser.username +'!'+
-                                '\nМы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/'+
-                                '\n\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/'+
-                                '\nЕсли ты уже нашел соседа, то аккаунт можно удалить тут в самом низу--> https://flatm8.ru/edit/'+
-                                '\n\nЕсли что-то работает не так дай нам об этом знать DanilChechkov@flatm8.ru', 
-                                    'flatmate@flatm8.ru')
+                createChatroom(mUser,hUser,capa,subinte)
+                if hUser.profile.chatNotif:
+                    hUser.email_user("FLATMATE - мы нашли тебе соседа!", 
+                            'Привет, ' + hUser.username +'!'+
+                            '\nМы нашли тебе соседа, осталось только написать ему! --> https://flatm8.ru/dialogs/'+
+                            '\n\nКстати от уведомлений можно отписаться тут --> https://flatm8.ru/edit/'+
+                            '\nЕсли ты уже нашел соседа, то аккаунт можно удалить тут в самом низу--> https://flatm8.ru/edit/'+
+                            '\n\nЕсли что-то работает не так дай нам об этом знать DanilChechkov@flatm8.ru', 
+                                'flatmate@flatm8.ru')
                     #NOTIF SYS OVER
 
             checked = []
@@ -222,7 +223,8 @@ def edit(request):
             chats = []
             for x in chats1:
                 if x not in chats:
-                    chats.append(x)
+                    if x.members.all()[0].profile.rntCity == x.members.all()[1].profile.rntCity:
+                        chats.append(x)
             return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
         else:
             #THAT IS F*CK UP
@@ -244,16 +246,12 @@ def edit(request):
                       {'user_form': user_form,
                        'profile_form': profile_form,'section':'edit','img':img})
 
-def checkChatr(mUser,hUser,cht,cap,sub):
+def checkChatr(mUser,hUser,cht):
     for idm in cht:
         chatf = Chatroom.objects.get(id=idm.get('id'))
         if mUser in chatf.members.all() and hUser in chatf.members.all():
-            if chatf.cap != cap or chatf.sub !=sub:
-                chatf.cap = cap 
-                chatf.sub = sub
-                chatf.save()
-            return 0
-    return 1
+            return 1
+    return 0
 
 def createChatroom(mUser,hUser,cap,sub):
     ourchat=Chatroom.objects.create(cap=cap,sub=sub)
@@ -303,7 +301,8 @@ def dialog(request):
     chats = []
     for x in chats1:
         if x not in chats:
-            chats.append(x)
+            if x.members.all()[0].profile.rntCity == x.members.all()[1].profile.rntCity:
+                chats.append(x)
     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
 
 @login_required

@@ -3,7 +3,7 @@
 {% block title %}Изменить профиль{% endblock %}
 
 {% block content %}
-<form id = 'edpa' action="." method="post" enctype="multipart/form-data">
+<form  id = 'edpa' action="." method="post" enctype="multipart/form-data">
     <div class='edrow1'>
     <div id='abm'>
         <h2>О тебе</h2>
@@ -225,7 +225,7 @@
     <a class="deleteme" href="{% url 'delete_me'%}">Удалить профиль. Я нашел соседа</a>
     <br>
     <label id='specialMark'>Данные недоступны другим пользователям, не продаются и не публикуются ни при каких условиях. Поля "Пара слов о тебе", "Имя", контактные данные и ваше фото являются исключением, доступным для просмотра другими людьми, при условии что алгоритм счел этого человека подходящим для Вас!</label>
-    <input id='edbut' type="submit" value="Сохранить изменения">
+    <input id='edbut' type="submit" name="submit" value="Сохранить изменения" onClick="this.value='Ищем варианты...';">
 </form>
 {% block javascript %}
 <script rel='JavaScript' type="text/javascript">
