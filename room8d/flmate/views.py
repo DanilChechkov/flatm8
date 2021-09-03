@@ -45,7 +45,12 @@ def user_login(request):
                 if user.is_active:
                     login(request, user)
                     lastAct(request)
-                    chats = Chatroom.objects.filter(members__in=[request.user.id])
+                    chats1 = Chatroom.objects.filter(members__in=[request.user.id]).order_by('-message','sub','-cap')
+                    chats = []
+                    for x in chats1:
+                        if x not in chats:
+                            if x.members.all()[0].profile.rntCity == x.members.all()[1].profile.rntCity:
+                                chats.append(x)
                     return render(request, 'account/dialogs.html', {'user_profile': request.user, 'chats': chats,'section':'dialogs'})
                 else:
                     return HttpResponse('Disabled account')
