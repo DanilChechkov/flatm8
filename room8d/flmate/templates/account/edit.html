@@ -222,12 +222,24 @@
     </div>
     {% csrf_token %}
     <br>
-    <a class="deleteme" href="{% url 'delete_me'%}">Удалить профиль. Я нашел соседа</a>
+    <a class="deleteme" href="{% url 'delete_me'%}">Удалить профиль. Я нашел соседа</a><!--{% url 'delete_me'%}-->
     <br>
     <label id='specialMark'>Данные недоступны другим пользователям, не продаются и не публикуются ни при каких условиях. Поля "Пара слов о тебе", "Имя", контактные данные и ваше фото являются исключением, доступным для просмотра другими людьми, при условии что алгоритм счел этого человека подходящим для Вас!</label>
     <input id='edbut' type="submit" name="submit" value="Сохранить изменения" onClick="this.value='Ищем варианты...';">
 </form>
 {% block javascript %}
+<script type="text/javascript">
+    $(".deleteme").on('click', function() {
+        if($(this).text() == 'Удалить профиль. Я нашел соседа'){
+            $(this).text('Уверен? Ещё один тап')
+            return false;
+        }
+        if($(this).text() == 'Уверен? Ещё один тап'){
+            $(this).text('Пока пока...')
+            return true;
+        }
+        });
+</script>
 <script rel='JavaScript' type="text/javascript">
     $(document).ready(function() {
     $('.django-select2').select2();
