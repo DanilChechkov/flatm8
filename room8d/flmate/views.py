@@ -179,8 +179,7 @@ def edit(request):
                 hRRel = str(you.get('aprR8RELIGY'))
                 #FILTER
                 if not ((hRRel == myRel or hRRel == 'nosing') and (myRRel == hRel or myRRel == 'nosing')): continue
-                chatlist = Chatroom.objects.values()
-                if checkChatr(mUser,hUser,chatlist): continue   
+                if checkChatr(mUser,hUser): continue   
                 hFrtime = [ x for x in you.get('aprFRETM')]
                 hPets = str(you.get('aprPETS'))
 
@@ -251,8 +250,8 @@ def edit(request):
                       {'user_form': user_form,
                        'profile_form': profile_form,'section':'edit','img':img})
 
-def checkChatr(mUser,hUser,cht):
-    for idm in cht:
+def checkChatr(mUser,hUser):
+    for idm in Chatroom.objects.values():
         chatf = Chatroom.objects.get(id=idm.get('id'))
         if mUser in chatf.members.all() and hUser in chatf.members.all():
             return 1
