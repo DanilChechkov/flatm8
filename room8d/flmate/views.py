@@ -120,7 +120,7 @@ def edit(request):
                     lastlog = hUser.profile.last_activity
                     lastpos = timezone.now().date()- td(days=21)
                     if lastlog:
-                        if lastlog<lastpos:
+                        if lastlog<=lastpos:
                             for chat in Chatroom.objects.all():
                                 if hUser in chat.members.all():
                                     chat.delete()
