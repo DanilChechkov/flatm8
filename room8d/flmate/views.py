@@ -28,7 +28,8 @@ def register(request):
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            profile = Profile.objects.create(user=new_user)
+            Profile.objects.create(user=new_user)
+            deactDelete()
             return render(request, 'account/register_done.html', {'new_user': new_user,'section':'reg'})
     else:
         user_form = UserRegistrationForm()
@@ -71,7 +72,6 @@ def edit(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            profileList = Profile.objects.values()
             request.user.profile.active = True
             if request.user.profile.contInsta[:1] == "@":
                 request.user.profile.contInsta = request.user.profile.contInsta[1:]
@@ -86,7 +86,6 @@ def edit(request):
             request.user.profile.save()
 
             
-            checked = []
             me = request.user.profile.__class__.objects.filter(pk=request.user.profile.id).values().first()
             mUser = User.objects.get(id=me.get('user_id'))
             myAge = int(me.get('urAge'))
@@ -114,50 +113,36 @@ def edit(request):
             myFrtime = [ x for x in me.get('aprFRETM')]
             myPets = str(me.get('aprPETS'))
             
-            for you in profileList:
-                hUser = User.objects.get(id=you.get('user_id'))
-                if not you.get('active'):
-                    lastlog = hUser.profile.last_activity
-                    lastpos = timezone.now().date()- td(days=21)
-                    if lastlog:
-                        if lastlog<=lastpos:
-                            for chat in Chatroom.objects.all():
-                                if hUser in chat.members.all():
-                                    chat.delete()
-                            hUser.email_user("FLATMATE: До встречи!", 
-                                    'Спасибо, ' + hUser.username +'!\nТы замечательный человек и мы уверены - ты нашел своего соседа! Уже 3 недели как ты не заходил на сайт.\nЕсли мы снова понадобимся тебе или твоим друзьям --> https://flatm8.ru/ \n\nДо новых встреч, дорогой друг!\nС наилучшими пожеланиями,\nТвой FLATMATE', 
-                                        'flatmate@flatm8.ru')
-                            hUser.profile.delete()
-                            hUser.delete()
-                    continue
-                else:
-                    lastlog = hUser.profile.last_activity
-                    if lastlog:
-                        lastpos = timezone.now().date()- td(days=14)
-                        if lastlog<=lastpos:
-                            hUser.profile.active = False
-                            hUser.profile.save()
-                            hUser.email_user("FLATMATE - твой аккаунт деактивирован!", 
-                                    'Привет, ' + hUser.username +'!\nСайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт и твой профиль снова активируется, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
-                                        'flatmate@flatm8.ru')
-                            continue    #IF EVERYTHING F*CK UP DELETE THIS LINE    
-                if me == you or [me.get('user_id'),you.get('user_id')] in checked: continue
-                hCity = str(you.get('rntCity'))
+            for you in Profile.objects.values():
+                if not you.get('active'): continue 
+                if me == you: continue
                 #FILTER
+                hCity = str(you.get('rntCity'))
                 if myCity != hCity:continue
+
                 points = 0
                 subinte=0
 
+                #FILTER
                 hAge = int(you.get('urAge'))
                 hRAge = [int(you.get('rmAgeL')),int(you.get('rmAgeU'))]
-                #FILTER
                 if not hRAge[0]<=myAge<=hRAge[1] or not myRAge[0]<=hAge<=myRAge[1]: continue
+                #FILTER
                 hPrice = [int(you.get('rntLPrice')),int(you.get('rntUPrice'))]
                 #FILTER
                 if not (hPrice[0]<=myPrice[1]<=hPrice[1] or myPrice[0]<=hPrice[1]<=myPrice[1]):continue
                 hRTime = str(you.get('rntTime'))
-                #FILTER
                 if myRTime != hRTime: continue
+                #FILTER
+                hGen = str(you.get('aprUGEN'))
+                hRGen = str(you.get('aprR8GEN'))
+                if not ((hRGen == myGen or hRGen == 'inbetween') and (myRGen == hGen or myRGen == 'inbetween')): continue
+                #FILTER
+                hRel = str(you.get('aprURRELIGY'))
+                hRRel = str(you.get('aprR8RELIGY'))
+                if not ((hRRel == myRel or hRRel == 'nosing') and (myRRel == hRel or myRRel == 'nosing')): continue
+                hUser = User.objects.get(id=you.get('user_id'))
+                if checkChatr(mUser,hUser): continue   
                 if hCity == 'spb':
                     hSubway = [ x for x in you.get('rntSubway')]
                 else:
@@ -171,20 +156,9 @@ def edit(request):
                 hClean = int(you.get('abrCLEAN'))
                 hGuest = str(you.get('abrGUEST'))
                 hmoL = str(you.get('abrCOMMUNISM'))
-                hGen = str(you.get('aprUGEN'))
-                hRGen = str(you.get('aprR8GEN'))
-                #FILTER
-                if not ((hRGen == myGen or hRGen == 'inbetween') and (myRGen == hGen or myRGen == 'inbetween')): continue
-                hRel = str(you.get('aprURRELIGY'))
-                hRRel = str(you.get('aprR8RELIGY'))
-                #FILTER
-                if not ((hRRel == myRel or hRRel == 'nosing') and (myRRel == hRel or myRRel == 'nosing')): continue
-                if checkChatr(mUser,hUser): continue   
                 hFrtime = [ x for x in you.get('aprFRETM')]
                 hPets = str(you.get('aprPETS'))
 
-                checked.append([me.get('user_id'),you.get('user_id')])
-                checked.append([you.get('user_id'),me.get('user_id')])
                 points += 15
 
                 #COUNT POINTS, NOT VERY IMPORTANT POINTS
@@ -222,7 +196,6 @@ def edit(request):
                                 'flatmate@flatm8.ru')
                     #NOTIF SYS OVER
 
-            checked = []
             chats1 = Chatroom.objects.filter(members__in=[request.user.id]).order_by('-message','sub','-cap')
             chats = []
             for x in chats1:
@@ -251,17 +224,15 @@ def edit(request):
                        'profile_form': profile_form,'section':'edit','img':img})
 
 def checkChatr(mUser,hUser):
-    for idm in Chatroom.objects.values():
-        chatf = Chatroom.objects.get(id=idm.get('id'))
-        if mUser in chatf.members.all() and hUser in chatf.members.all():
-            return 1
+    chats = Chatroom.objects.filter(members=(mUser.id))
+    if len(chats)>0:
+        for chat in chats:
+            if hUser in chat.members.all():return 1
     return 0
 
 def createChatroom(mUser,hUser,cap,sub):
     ourchat=Chatroom.objects.create(cap=cap,sub=sub)
-    ourchat.save()
     ourchat.members.add(mUser)
-    ourchat.save()
     ourchat.members.add(hUser)
     ourchat.save()
 
@@ -289,6 +260,33 @@ def lastAct(req):
             req.user.profile.last_activity = timezone.now().date()
             req.user.profile.active = True
         req.user.profile.save()
+
+def deactDelete():
+    for you in Profile.objects.values():
+        hUser = User.objects.get(id=you.get('user_id'))
+        lastlog = hUser.profile.last_activity
+        if not you.get('active'):#DELETING AFTER 21 DAYS
+            lastpos = timezone.now().date()- td(days=21)
+            if lastlog:
+                if lastlog<=lastpos:
+                    for chat in Chatroom.objects.all():
+                        if hUser in chat.members.all():
+                            chat.delete()
+                    hUser.email_user("FLATMATE: До встречи!", 
+                            'Спасибо, ' + hUser.username +'!\nТы замечательный человек и мы уверены - ты нашел своего соседа! Уже 3 недели как ты не заходил на сайт.\nЕсли мы снова понадобимся тебе или твоим друзьям --> https://flatm8.ru/ \n\nДо новых встреч, дорогой друг!\nС наилучшими пожеланиями,\nТвой FLATMATE', 
+                                'flatmate@flatm8.ru')
+                    hUser.profile.delete()
+                    hUser.delete()
+                    print('\tDELETED')
+        else:#DEACTIVATION AFTER 14 DAYS
+            if lastlog:
+                lastpos = timezone.now().date()- td(days=14)
+                if lastlog<=lastpos:
+                    hUser.profile.active = False
+                    hUser.profile.save()
+                    hUser.email_user("FLATMATE - твой аккаунт деактивирован!", 
+                            'Привет, ' + hUser.username +'!\nСайт растет и число пользователей ежедневно увеличивается! Ты не заходил на сайт более двух недель и мы решили, что ты больше не ищешь соседа, поэтому деактивировали твой профиль. Если мы ошиблись - заходи на сайт и твой профиль снова активируется, иначе твой аккаунт будет безвозвратно удален через неделю! --> https://flatm8.ru/', 
+                                'flatmate@flatm8.ru')
     
     
 
