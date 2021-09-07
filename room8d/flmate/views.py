@@ -113,13 +113,8 @@ def edit(request):
             myFrtime = [ x for x in me.get('aprFRETM')]
             myPets = str(me.get('aprPETS'))
             
-            for you in Profile.objects.values():
-                if not you.get('active'): continue 
+            for you in Profile.objects.values().filter(rntCity=myCity,active=True):
                 if me == you: continue
-                #FILTER
-                hCity = str(you.get('rntCity'))
-                if myCity != hCity:continue
-
                 points = 0
                 subinte=0
 
@@ -142,7 +137,8 @@ def edit(request):
                 hRRel = str(you.get('aprR8RELIGY'))
                 if not ((hRRel == myRel or hRRel == 'nosing') and (myRRel == hRel or myRRel == 'nosing')): continue
                 hUser = User.objects.get(id=you.get('user_id'))
-                if checkChatr(mUser,hUser): continue   
+                if checkChatr(mUser,hUser): continue  
+                hCity = str(you.get('rntCity')) 
                 if hCity == 'spb':
                     hSubway = [ x for x in you.get('rntSubway')]
                 else:
@@ -253,7 +249,6 @@ def delete_me(request):
 @login_required
 def lastAct(req):
     if req.user.profile.abuBADIC:
-        print('WOW')
         if not req.user.profile.last_activity:
             req.user.profile.last_activity = timezone.now().date()
         if req.user.profile.last_activity < timezone.now().date():
@@ -293,6 +288,11 @@ def deactDelete():
 @login_required
 def dialog(request):
     lastAct(request)
+
+    #for x in Profile.objects.values().filter(rntCity='spb',active=True):
+    #   print(x.get('id'),x.get('rntCity'), x.get('active'),sep='\t')
+    #print(len(Profile.objects.values().filter(rntCity='msc')))
+
     #dat = {}
     #with open(settings.BASE_DIR +'/notification.pkl', 'rb') as f:
     #    dat =pickle.load(f)
