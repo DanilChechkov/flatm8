@@ -916,10 +916,9 @@ div.mesbody-unreaded{
 }
 /*VK CONNECTION*/
 div.VKPost{
-    width: 90vw;
-    margin-bottom: 5vh;
-    margin-left: auto;
-    margin-right: auto; 
+    width: 92vw;
+    margin-bottom: 10vh;
+    margin-left: 1vw;
     border-radius: 2vw;
     border: .5vh solid #538FB7;
 }
