@@ -157,7 +157,7 @@
     </div>
     <div id='abrent'>
         <h2>О квартире</h2>
-        <label>Цена за всю квартиру:</label>
+        <label><strong>Цена за ВСЮ квартиру:</strong></label>
         <div class='row'>
         {% for field in profile_form.visible_fields|slice:"17:26"  %}
             {% if field.name == 'rntTime'%}
