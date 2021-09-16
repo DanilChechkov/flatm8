@@ -180,7 +180,7 @@ def edit(request):
                 if len(badInter)>0: points +=1
                 #SAVING ROOMATES
                 capa = 100*points/31
-                if capa<65: continue
+                if capa<62: continue
                 createChatroom(mUser,hUser,capa,subinte)
                 if hUser.profile.chatNotif:
                     hUser.email_user("FLATMATE - мы нашли тебе соседа!", 
